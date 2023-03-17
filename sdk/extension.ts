@@ -1,8 +1,13 @@
 import { StaticImageData } from "next/image";
+import { DetailProps } from "./components";
 
 export enum CommandType {
   Informational,
   Actionable,
+}
+
+export interface CommandHandlerProps {
+  query: string;
 }
 
 export interface Command {
@@ -11,7 +16,7 @@ export interface Command {
   description: string;
   type: CommandType;
   shouldHandle: (query: string) => boolean;
-  handler: (query: string) => Promise<string>;
+  handler: React.FC<CommandHandlerProps>;
 }
 
 export interface UserQuery {
@@ -28,5 +33,4 @@ export abstract class Extension {
   initialize?(): Promise<void>;
 
   abstract commands: Command[];
-
 }

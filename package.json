@@ -16,6 +16,7 @@
     "@mantine/modals": "^6.0.2",
     "@mantine/next": "^6.0.2",
     "@mantine/notifications": "^6.0.2",
+    "@tabler/icons-react": "^2.10.0",
     "@types/node": "18.15.3",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
@@ -26,6 +27,7 @@
     "pupa": "^3.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-markdown": "^8.0.5",
     "searchpal": "^2.1.3",
     "styled-components": "^5.3.9",
     "typescript": "5.0.2"

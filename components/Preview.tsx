@@ -1,5 +1,5 @@
 import { Command, Extension } from "@/sdk";
-import { useEffect, useState } from "react";
+import { Flex } from "@mantine/core";
 
 interface Action {
   extension: Extension;
@@ -12,21 +12,17 @@ interface PreviewProps {
 }
 
 const Preview: React.FC<PreviewProps> = ({ action, query }) => {
-  const [result, setResult] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function run() {
-      const result = await action.command.handler(query);
-      return result;
-    }
-
-    run().then(setResult);
-  }, [action, query]);
-
+  const Component = action.command.handler;
   return (
-    <div className="preview">
-      <div>{result}</div>
-    </div>
+    <Flex
+      gap="xs"
+      justify="center"
+      align="center"
+      direction="column"
+      wrap="wrap"
+    >
+      <Component query={query} />
+    </Flex>
   );
 };
 

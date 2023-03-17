@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Search, Searcher, Theme, Option } from "searchpal";
 import pupa from "pupa";
 import Media from "@/components/Media";
-import { Command, Extension } from "@/sdk";
+import { Command, CommandType, Extension } from "@/sdk";
 import Preview from "./Preview";
 
 interface SearchboxProps {
@@ -85,7 +85,13 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
           }
           cta="See full profile"
           media={Media}
-          preview={<Preview action={action} query={query} />}
+          preview={
+            action.command.type === CommandType.Informational ? (
+              <Preview action={action} query={query} />
+            ) : (
+              <div>Test</div>
+            )
+          }
         />
       );
     });
