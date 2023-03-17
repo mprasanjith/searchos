@@ -42,7 +42,7 @@ export class CoinGeckoExtension extends Extension {
       title: "Get {query} token info",
       description: "Get token info from CoinGecko.",
       type: CommandType.Informational,
-      shouldHandle: (query: string) => !!this.client.findTokenMatch(query),
+      shouldHandle: (query: string) => false,
       handler: ({ query }) => {
         return <div>{query}</div>;
       },
