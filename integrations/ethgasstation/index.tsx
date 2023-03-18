@@ -28,7 +28,6 @@ export class EthGasStationExtension extends Extension {
       name: "get-gas-price",
       title: "Get Ethereum gas price",
       description: "Get gas prices for Ethereum mainnet from EthGasStation.",
-      type: CommandType.Informational,
       shouldHandle: (query: string) => {
         return query.trim().toLowerCase().includes("gas")
       },
