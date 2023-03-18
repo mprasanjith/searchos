@@ -33,7 +33,6 @@ export class CoinGeckoExtension extends Extension {
       name: "get-price",
       title: "Get {query} token price",
       description: "Get token prices from CoinGecko.",
-      type: CommandType.Informational,
       shouldHandle: (query: string) => !!this.client.findTokenMatch(query),
       handler: ({ query }) => <TokenPrice client={this.client} query={query} />,
     },
@@ -41,7 +40,6 @@ export class CoinGeckoExtension extends Extension {
       name: "get-price-history",
       title: "Get {query} token info",
       description: "Get token info from CoinGecko.",
-      type: CommandType.Informational,
       shouldHandle: (query: string) => false,
       handler: ({ query }) => {
         return <div>{query}</div>;

@@ -83,15 +83,9 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
               ? { src: action.extension.icon as any }
               : undefined
           }
-          cta="See full profile"
+          button={() => null}
           media={Media}
-          preview={
-            action.command.type === CommandType.Informational ? (
-              <Preview action={action} query={query} />
-            ) : (
-              <div>Test</div>
-            )
-          }
+          preview={<Preview action={action} query={query} />}
         />
       );
     });

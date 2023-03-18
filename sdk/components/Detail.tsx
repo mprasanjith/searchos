@@ -1,4 +1,4 @@
-import { Alert, Center, Skeleton } from "@mantine/core";
+import { Alert, Box, Center, Skeleton } from "@mantine/core";
 import ReactMarkdown from "react-markdown";
 import { IconAlertCircle } from "@tabler/icons-react";
 
@@ -29,11 +29,11 @@ export const Detail: React.FC<DetailProps> = ({
   return (
     <Skeleton visible={isPending}>
       {markdown ? (
-        <Center>
+        <Center ta="center">
           <ReactMarkdown>{markdown}</ReactMarkdown>
         </Center>
       ) : (
-        children
+        <Box ta="center">{children}</Box>
       )}
     </Skeleton>
   );

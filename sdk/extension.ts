@@ -1,5 +1,4 @@
 import { StaticImageData } from "next/image";
-import { DetailProps } from "./components";
 
 export enum CommandType {
   Informational,
@@ -14,7 +13,6 @@ export interface Command {
   name: string;
   title: string;
   description: string;
-  type: CommandType;
   shouldHandle: (query: string) => boolean;
   handler: React.FC<CommandHandlerProps>;
 }

@@ -117,7 +117,7 @@ const TokenPrice: React.FC<TokenPriceProps> = ({ client, query }) => {
         </Group>
 
         <Text fz="xs" c="dimmed" mt={7}>
-          Compared to previous month
+          Compared to previous day
         </Text>
       </Box>
     </Detail>
