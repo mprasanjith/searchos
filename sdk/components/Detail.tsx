@@ -16,8 +16,6 @@ export const Detail: React.FC<DetailProps> = ({
   isError,
   markdown,
   children,
-  metadata,
-  navigationTitle,
 }) => {
   if (isError) {
     return (
@@ -33,7 +31,7 @@ export const Detail: React.FC<DetailProps> = ({
           <ReactMarkdown>{markdown}</ReactMarkdown>
         </Center>
       ) : (
-        <Box ta="center">{children}</Box>
+        <Box>{children}</Box>
       )}
     </Skeleton>
   );

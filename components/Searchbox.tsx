@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Search, Searcher, Theme, Option } from "searchpal";
 import pupa from "pupa";
 import Media from "@/components/Media";
-import { Command, CommandType, Extension } from "@/sdk";
+import { Command, Extension } from "@/sdk";
 import Preview from "./Preview";
 
 interface SearchboxProps {
@@ -77,7 +77,11 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
       return (
         <Option
           key={`${action.extension.name}-${action.command.name}`}
-          label={pupa(action.command.title, { query })}
+          label={
+            typeof action.command.title == "function"
+              ? action.command.title(query)
+              : pupa(action.command.title, { query })
+          }
           img={
             action.extension.icon
               ? { src: action.extension.icon as any }

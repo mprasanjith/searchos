@@ -1,4 +1,4 @@
-import { Command, CommandType, Extension } from "@/sdk";
+import { Command, Extension } from "@/sdk";
 import icon from "./icon.png";
 import GasPrice from "./GasPrice";
 

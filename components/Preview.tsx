@@ -13,17 +13,7 @@ interface PreviewProps {
 
 const Preview: React.FC<PreviewProps> = ({ action, query }) => {
   const Component = action.command.handler;
-  return (
-    <Flex
-      gap="xs"
-      justify="center"
-      align="center"
-      direction="column"
-      wrap="wrap"
-    >
-      <Component query={query} />
-    </Flex>
-  );
+  return <Component query={query} />;
 };
 
 export default Preview;

@@ -1,18 +1,15 @@
 import { StaticImageData } from "next/image";
 
-export enum CommandType {
-  Informational,
-  Actionable,
-}
-
 export interface CommandHandlerProps {
   query: string;
 }
 
+type ParsedQueryFn = (query: string) => string;
+
 export interface Command {
   name: string;
-  title: string;
-  description: string;
+  title: string | ParsedQueryFn;
+  description: string | ParsedQueryFn;
   shouldHandle: (query: string) => boolean;
   handler: React.FC<CommandHandlerProps>;
 }
