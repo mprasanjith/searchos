@@ -1,6 +1,6 @@
 import { useMantineTheme } from "@mantine/core";
 import { useMemo } from "react";
-import { Search, Searcher, Theme, Option } from "searchpal";
+import { Search, Searcher, Theme, Option } from "@/components/searchpal/lib";
 import pupa from "pupa";
 import Media from "@/components/Media";
 import { Command, Extension } from "@/sdk";
@@ -70,7 +70,7 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
     return actions;
   }, [extensions]);
 
-  const searcher: Searcher = async (query) => {
+  const searcher: Searcher = async (query: string) => {
     return actions.map((action) => {
       if (!action.command.shouldHandle(query)) return null;
 
@@ -81,6 +81,11 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
             typeof action.command.title == "function"
               ? action.command.title(query)
               : pupa(action.command.title, { query })
+          }
+          description={
+            typeof action.command.description == "function"
+              ? action.command.description(query)
+              : pupa(action.command.description, { query })
           }
           img={
             action.extension.icon

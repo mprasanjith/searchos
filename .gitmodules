@@ -1,0 +1,3 @@
+[submodule "components/searchpal"]
+	path = components/searchpal
+	url = https://github.com/mprasanjith/searchpal

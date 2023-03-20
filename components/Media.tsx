@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MediaComponent } from "searchpal";
+import { MediaComponent } from "@/components/searchpal/lib";
 
 const Media: MediaComponent = ({ img, label }) => {
   const letter = label.charAt(0).toUpperCase();
