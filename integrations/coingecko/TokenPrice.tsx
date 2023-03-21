@@ -13,8 +13,9 @@ import { useEffect, useState } from "react";
 import { CoinGeckoPriceResult, CoinGeckoTokenResult } from ".";
 import { CoinGeckoClient } from "./client";
 
-interface TokenPriceProps extends CommandHandlerProps {
+interface TokenPriceProps {
   client: CoinGeckoClient;
+  query: string;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -53,8 +54,6 @@ const TokenPrice: React.FC<TokenPriceProps> = ({ client, query }) => {
   const [price, setPrice] = useState<CoinGeckoPriceResult | null>(null);
 
   const { classes } = useStyles();
-
-  console.log({ client, query });
 
   useEffect(() => {
     if (!query) return;

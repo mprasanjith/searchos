@@ -22,6 +22,7 @@
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "cookies-next": "^2.1.1",
+    "ecolect-parser": "^0.7.2",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "ethers": "^5",

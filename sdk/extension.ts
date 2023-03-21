@@ -2,15 +2,39 @@ import { StaticImageData } from "next/image";
 
 export interface CommandHandlerProps {
   query: string;
+  values: Record<string, string>;
 }
 
-type ParsedQueryFn = (query: string) => string;
+type ParsedQueryFn = (data: CommandHandlerProps) => string;
+
+export enum ParamType {
+  Text = "Text",
+  // Integer = "Integer",
+  // Number = "Number",
+  // Ordinal = "Ordinal",
+  // Date = "Date",
+  // Time = "Time",
+  // DateTime = "DateTime",
+  // DateInterval = "DateInterval",
+  // DateDuration = "DateDuration",
+  // TimeDuration = "TimeDuration",
+  // DateTimeDuration = "DateTimeDuration",
+  // Enumeration = "Enumeration"
+}
+
+export interface Param {
+  name: string;
+  type: ParamType;
+  // values?: any;
+}
 
 export interface Command {
   name: string;
   title: string | ParsedQueryFn;
   description: string | ParsedQueryFn;
-  shouldHandle: (query: string) => boolean;
+  params?: Param[];
+  intents: string[];
+  shouldHandle?: (data: CommandHandlerProps) => boolean;
   handler: React.FC<CommandHandlerProps>;
 }
 

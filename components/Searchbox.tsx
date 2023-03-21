@@ -5,17 +5,27 @@ import pupa from "pupa";
 import Media from "@/components/Media";
 import { Command, Extension } from "@/sdk";
 import Preview from "./Preview";
+import { Matcher } from "ecolect-parser";
 
 interface SearchboxProps {
   extensions: Extension[];
+  intents: Matcher<any>;
 }
 
 interface Action {
+  id: string;
   extension: Extension;
   command: Command;
 }
 
-const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
+interface Match {
+  id: string;
+  score: number;
+  values: Record<string, any>;
+  action?: Action;
+}
+
+const Searchbox: React.FC<SearchboxProps> = ({ extensions, intents }) => {
   const mantineTheme = useMantineTheme();
 
   const theme = useMemo(() => {
@@ -62,6 +72,7 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
     extensions.forEach((extension) => {
       extension.commands.forEach((command) => {
         actions.push({
+          id: `${extension.name}:${command.name}`,
           extension,
           command,
         });
@@ -71,21 +82,34 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
   }, [extensions]);
 
   const searcher: Searcher = async (query: string) => {
-    return actions.map((action) => {
-      if (!action.command.shouldHandle(query)) return null;
+    const matches: Match[] = await intents.matchPartial(query);
+
+    console.log({ matches });
+
+    const matchedActions = matches.map((match) => ({
+      ...match,
+      action: actions.find((action) => match.id === action.id) || actions[0],
+    }));
+
+    return matchedActions.map(({ action, values }) => {
+      if (
+        action.command.shouldHandle &&
+        !action.command.shouldHandle({ query, values })
+      )
+        return null;
 
       return (
         <Option
           key={`${action.extension.name}-${action.command.name}`}
           label={
             typeof action.command.title == "function"
-              ? action.command.title(query)
-              : pupa(action.command.title, { query })
+              ? action.command.title({ query, values })
+              : action.command.title
           }
           description={
             typeof action.command.description == "function"
-              ? action.command.description(query)
-              : pupa(action.command.description, { query })
+              ? action.command.description({ query, values })
+              : action.command.description
           }
           img={
             action.extension.icon
@@ -94,7 +118,7 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
           }
           button={() => null}
           media={Media}
-          preview={<Preview action={action} query={query} />}
+          preview={<Preview action={action} query={query} values={values} />}
         />
       );
     });

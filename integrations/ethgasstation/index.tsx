@@ -28,11 +28,9 @@ export class EthGasStationExtension extends Extension {
       name: "get-gas-price",
       title: "Get Ethereum gas price",
       description: "Get gas prices for Ethereum mainnet from EthGasStation.",
-      shouldHandle: (query: string) => {
-        return query.trim().toLowerCase().includes("gas")
-      },
-      handler: ({ query }) => <GasPrice query={query} />,
-    }
+      intents: ["Gas price", "Ethereum gas", "Gas fees"],
+      handler: ({ query, values }) => <GasPrice query={query} values={values} />,
+    },
   ];
 
   async initialize() {}

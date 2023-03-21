@@ -1,19 +1,17 @@
-import { Command, Extension } from "@/sdk";
-import { Flex } from "@mantine/core";
+import { Command, CommandHandlerProps, Extension } from "@/sdk";
 
 interface Action {
   extension: Extension;
   command: Command;
 }
 
-interface PreviewProps {
+interface PreviewProps extends CommandHandlerProps {
   action: Action;
-  query: string;
 }
 
-const Preview: React.FC<PreviewProps> = ({ action, query }) => {
+const Preview: React.FC<PreviewProps> = ({ action, query, values }) => {
   const Component = action.command.handler;
-  return <Component query={query} />;
+  return <Component query={query} values={values} />;
 };
 
 export default Preview;

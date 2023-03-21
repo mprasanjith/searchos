@@ -1,4 +1,4 @@
-import { Command, Extension } from "@/sdk";
+import { Command, Extension, ParamType } from "@/sdk";
 import { HTTP } from "@/sdk/helpers";
 import { CoinGeckoClient } from "./client";
 import icon from "./icon.png";
@@ -31,11 +31,23 @@ export class CoinGeckoExtension extends Extension {
   commands: Command[] = [
     {
       name: "get-price",
-      title: "Get {query} token price",
+      title: ({ values }) => `Get ${values?.token?.toUpperCase()} token price`,
       description: "Get token prices from CoinGecko.",
-      shouldHandle: (query: string) => !!this.client.findTokenMatch(query),
-      handler: ({ query }) => <TokenPrice client={this.client} query={query} />,
-    }
+      params: [{ name: "token", type: ParamType.Text }],
+      intents: [
+        "{token}",
+        "{token} token",
+        "{token} price",
+        "get {token} price",
+        "get {token} token price",
+        "get price of {token}",
+      ],
+      shouldHandle: ({ values }) =>
+        !!this.client.findTokenMatch(values?.["token"]),
+      handler: ({ values }) => (
+        <TokenPrice client={this.client} query={values?.["token"]} />
+      ),
+    },
   ];
 
   async initialize() {
