@@ -1,10 +1,10 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
-import { Box, ColorScheme, Container, MantineProvider } from "@mantine/core";
+import { Box, ColorScheme, MantineProvider } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
-import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { darkTheme, RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-
+import '@rainbow-me/rainbowkit/wallets'
 import { WagmiConfig, createClient, configureChains, mainnet } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 
@@ -19,10 +19,16 @@ export default function App(props: AppProps) {
     [mainnet],
     [publicProvider()]
   );
+
+  const { connectors } = getDefaultWallets({
+    appName: "SearchOS",
+    chains,
+  })
   const client = createClient({
     autoConnect: true,
     provider,
     webSocketProvider,
+    connectors
   });
 
   return (
