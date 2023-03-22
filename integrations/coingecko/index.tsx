@@ -31,11 +31,18 @@ export class CoinGeckoExtension extends Extension {
   commands: Command[] = [
     {
       name: "get-price",
-      title: "Get {query} token price",
-      description: "Get token prices from CoinGecko.",
+      title: (query) => `Get ${query?.toUpperCase()} token price`,
+      description: "Get token prices via CoinGecko",
+      url: (query) => {
+        const token = this.client.findTokenMatch(query);
+        return (
+          `https://www.coingecko.com/en/coins/${token?.id}` ||
+          "https://www.coingecko.com/"
+        );
+      },
       shouldHandle: (query: string) => !!this.client.findTokenMatch(query),
       handler: ({ query }) => <TokenPrice client={this.client} query={query} />,
-    }
+    },
   ];
 
   async initialize() {

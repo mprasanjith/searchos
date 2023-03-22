@@ -1,52 +1,23 @@
 import {
   Box,
   CommandHandlerProps,
-  createStyles,
   Detail,
   Group,
-  rem,
   Text,
+  Avatar,
+  Flex,
+  Stack,
+  Button,
 } from "@/sdk";
 import { useEffect, useState } from "react";
 import { EthGasStationClient, EthGasStationResult } from "./client";
+import icon from "./icon.png";
 
 interface TokenPriceProps extends CommandHandlerProps {}
-
-const useStyles = createStyles((theme) => ({
-  root: {
-    padding: `calc(${theme.spacing.xl} * 1.5)`,
-  },
-
-  value: {
-    fontSize: rem(24),
-    fontWeight: 700,
-    lineHeight: 1,
-  },
-
-  diff: {
-    lineHeight: 1,
-    display: "flex",
-    alignItems: "center",
-  },
-
-  icon: {
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[3]
-        : theme.colors.gray[4],
-  },
-
-  title: {
-    fontWeight: 700,
-    textTransform: "uppercase",
-  },
-}));
 
 const GasPrice: React.FC<TokenPriceProps> = ({ query }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [gasPrice, setGasPrice] = useState<EthGasStationResult | null>(null);
-
-  const { classes } = useStyles();
 
   useEffect(() => {
     if (!query) return;
@@ -78,19 +49,63 @@ const GasPrice: React.FC<TokenPriceProps> = ({ query }) => {
   return (
     <Detail isPending={isLoading} isError={!isLoading && !gasPrice}>
       <Box>
-        <Group>
-          <Text size="xs" color="dimmed" className={classes.title}>
+        <Flex
+          p="md"
+          justify="center"
+          direction="column"
+          align="center"
+          sx={(theme) => ({
+            borderBottom: `1px solid ${theme.colors.gray[1]}`,
+          })}
+        >
+          <Avatar src={icon.src} radius="xl" size="lg" />
+
+          <Text size="xl" mt="xs">
             Gas Price
           </Text>
-        </Group>
 
-        <Group align="flex-end" spacing="xs" mt={25}>
-          <Text className={classes.value}>{gasPrice?.average}</Text>
-        </Group>
+          <Text size="sm" color="dimmed">
+            Ethereum
+          </Text>
+        </Flex>
 
-        <Text fz="xs" c="dimmed" mt={7}>
-          Average gas price right now
-        </Text>
+        <Flex
+          m="lg"
+          gap="xs"
+          direction="column"
+          sx={{ fontSize: "0.96rem", gap: "0.26rem" }}
+        >
+          {gasPrice?.fast && (
+            <Group align="flex-end" spacing="xs">
+              <Text w="6rem" color="dimmed">
+                Fast
+              </Text>
+              <Text>
+                {gasPrice?.fast / 10} (~{gasPrice?.fastWait}min)
+              </Text>
+            </Group>
+          )}
+          {gasPrice?.average && (
+            <Group align="flex-end" spacing="xs">
+              <Text w="6rem" color="dimmed">
+                Standard
+              </Text>
+              <Text>
+                {gasPrice?.average / 10} (~{gasPrice?.avgWait}min)
+              </Text>
+            </Group>
+          )}
+          {gasPrice?.safeLow && (
+            <Group align="flex-end" spacing="xs">
+              <Text w="6rem" color="dimmed">
+                Safe Low
+              </Text>
+              <Text>
+                {gasPrice?.safeLow / 10} (~{gasPrice?.safeLowWait}min)
+              </Text>
+            </Group>
+          )}
+        </Flex>
       </Box>
     </Detail>
   );

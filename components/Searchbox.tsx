@@ -1,7 +1,6 @@
-import { useMantineTheme } from "@mantine/core";
+import { Button, Flex, useMantineTheme } from "@mantine/core";
 import { useMemo } from "react";
 import { Search, Searcher, Theme, Option } from "@/components/searchpal/lib";
-import pupa from "pupa";
 import Media from "@/components/Media";
 import { Command, Extension } from "@/sdk";
 import Preview from "./Preview";
@@ -27,8 +26,8 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
         background: mantineTheme.white,
         text: mantineTheme.black,
         textSecondary: mantineTheme.colors.dark[1],
-        borderColor: "transparent",
-        borderWidth: "0",
+        borderColor: mantineTheme.colors.gray[1],
+        borderWidth: "1px",
         backdrop: "transparent",
         backdropOpacity: "2",
         optionBackground: "transparent",
@@ -80,19 +79,43 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
           label={
             typeof action.command.title == "function"
               ? action.command.title(query)
-              : pupa(action.command.title, { query })
+              : action.command.title
           }
           description={
             typeof action.command.description == "function"
               ? action.command.description(query)
-              : pupa(action.command.description, { query })
+              : action.command.description
           }
           img={
             action.extension.icon
               ? { src: action.extension.icon as any }
               : undefined
           }
-          button={() => null}
+          button={({ cta }) => {
+            const url =
+              typeof action.command.url == "function"
+                ? action.command.url(query)
+                : action.command.url;
+            return url ? (
+              <a href={url}>
+                <Flex m="md">
+                  <Button fullWidth variant="filled" color="dark.4">
+                    {cta}
+                  </Button>
+                </Flex>
+              </a>
+            ) : null;
+          }}
+          href={
+            typeof action.command.url == "function"
+              ? action.command.url(query)
+              : action.command.url
+          }
+          cta={
+            typeof action.command.cta == "function"
+              ? action.command.cta(query)
+              : action.command.cta || "See details"
+          }
           media={Media}
           preview={<Preview action={action} query={query} />}
         />
@@ -115,6 +138,15 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
         },
       }}
       open={true}
+      link={({ href, children }) => (
+        <a
+          href={href}
+          style={{ textDecoration: "none", color: "initial" }}
+          target="_blank"
+        >
+          {children}
+        </a>
+      )}
       onClose={() => {}}
       animate={"fade"}
     >
