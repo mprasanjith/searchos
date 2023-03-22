@@ -9,12 +9,34 @@ export interface CoinGeckoTokenResult {
   name: string;
 }
 
-export interface CoinGeckoPriceResult {
-  usd: number;
-  usd_market_cap: number;
-  usd_24h_vol: number;
-  usd_24h_change: number;
-  last_updated_at: number;
+export interface CoinGeckoTokenDataResult {
+  market_data: {
+    current_price: {
+      usd: number;
+    };
+    market_cap: {
+      usd: number;
+    };
+    total_volume: {
+      usd: number;
+    };
+    fully_diluted_valuation: {
+      usd: number;
+    };
+    high_24h: {
+      usd: number;
+    }
+    low_24h: {
+      usd: number;
+    }
+    price_change_percentage_24h: number;
+    market_cap_change_percentage_24h: number;
+  };
+  image: {
+    small: string;
+    large: string;
+  };
+  market_cap_rank: number;
 }
 
 export class CoinGeckoExtension extends Extension {
