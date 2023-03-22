@@ -26,7 +26,7 @@ export class EthGasStationExtension extends Extension {
   commands: Command[] = [
     {
       name: "get-gas-price",
-      title: "Get Ethereum gas price",
+      title: "Get gas price",
       description: "Get gas prices from EthGasStation",
       shouldHandle: (query: string) => {
         return query.trim().toLowerCase().includes("gas");

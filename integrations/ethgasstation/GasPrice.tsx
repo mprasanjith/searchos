@@ -1,17 +1,9 @@
-import {
-  Box,
-  CommandHandlerProps,
-  Detail,
-  Group,
-  Text,
-  Avatar,
-  Flex,
-  Stack,
-  Button,
-} from "@/sdk";
+import { Box, CommandHandlerProps, Detail } from "@/sdk";
 import { useEffect, useState } from "react";
 import { EthGasStationClient, EthGasStationResult } from "./client";
 import icon from "./icon.png";
+import IconHeader from "@/sdk/templates/IconHeader";
+import DetailsGrid from "@/sdk/templates/DetailsGrid";
 
 interface TokenPriceProps extends CommandHandlerProps {}
 
@@ -49,63 +41,21 @@ const GasPrice: React.FC<TokenPriceProps> = ({ query }) => {
   return (
     <Detail isPending={isLoading} isError={!isLoading && !gasPrice}>
       <Box>
-        <Flex
-          p="md"
-          justify="center"
-          direction="column"
-          align="center"
-          sx={(theme) => ({
-            borderBottom: `1px solid ${theme.colors.gray[1]}`,
-          })}
-        >
-          <Avatar src={icon.src} radius="xl" size="lg" />
+        <IconHeader title="Gas Price" subtitle="Ethereum" imageUrl={icon.src} />
 
-          <Text size="xl" mt="xs">
-            Gas Price
-          </Text>
-
-          <Text size="sm" color="dimmed">
-            Ethereum
-          </Text>
-        </Flex>
-
-        <Flex
-          m="lg"
-          gap="xs"
-          direction="column"
-          sx={{ fontSize: "0.96rem", gap: "0.26rem" }}
-        >
-          {gasPrice?.fast && (
-            <Group align="flex-end" spacing="xs">
-              <Text w="6rem" color="dimmed">
-                Fast
-              </Text>
-              <Text>
-                {gasPrice?.fast / 10} (~{gasPrice?.fastWait}min)
-              </Text>
-            </Group>
-          )}
-          {gasPrice?.average && (
-            <Group align="flex-end" spacing="xs">
-              <Text w="6rem" color="dimmed">
-                Standard
-              </Text>
-              <Text>
-                {gasPrice?.average / 10} (~{gasPrice?.avgWait}min)
-              </Text>
-            </Group>
-          )}
-          {gasPrice?.safeLow && (
-            <Group align="flex-end" spacing="xs">
-              <Text w="6rem" color="dimmed">
-                Safe Low
-              </Text>
-              <Text>
-                {gasPrice?.safeLow / 10} (~{gasPrice?.safeLowWait}min)
-              </Text>
-            </Group>
-          )}
-        </Flex>
+        <DetailsGrid
+          details={{
+            Fast: gasPrice?.fast
+              ? `${gasPrice?.fast / 10} (~${gasPrice?.fastWait}min)`
+              : "",
+            Standard: gasPrice?.average
+              ? `${gasPrice?.average / 10} (~${gasPrice?.avgWait}min)`
+              : "",
+            "Safe Low": gasPrice?.safeLow
+              ? `${gasPrice?.safeLow / 10} (~${gasPrice?.safeLowWait}min)`
+              : "",
+          }}
+        />
       </Box>
     </Detail>
   );
