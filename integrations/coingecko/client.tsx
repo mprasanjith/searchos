@@ -1,18 +1,5 @@
 import { HTTP } from "@/sdk/helpers";
-
-export interface CoinGeckoTokenResult {
-  id: string;
-  symbol: string;
-  name: string;
-}
-
-export interface CoinGeckoPriceResult {
-  usd: number;
-  usd_market_cap: number;
-  usd_24h_vol: number;
-  usd_24h_change: number;
-  last_updated_at: number;
-}
+import { CoinGeckoTokenDataResult, CoinGeckoTokenResult } from ".";
 
 export class CoinGeckoClient {
   private http: HTTP = new HTTP();
@@ -38,8 +25,8 @@ export class CoinGeckoClient {
     );
   }
 
-  async getPrice(tokenId: string) {
-    return this.http.get<CoinGeckoPriceResult>(
+  async getTokenData(tokenId: string) {
+    return this.http.get<CoinGeckoTokenDataResult>(
       `/api/integrations/coingecko/price?id=${tokenId}`
     );
   }
