@@ -1,78 +1,47 @@
 import {
+  Avatar,
   Box,
   CommandHandlerProps,
-  createStyles,
   Detail,
   Group,
-  IconArrowDownRight,
-  IconArrowUpRight,
-  rem,
+  Stack,
   Text,
+  useAccount,
+  useEnsName,
+  useNetwork,
+  ethers,
 } from "@/sdk";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CovalentClient, CovalentWalletBalanceResult } from "./client";
-import { useAccount, useNetwork } from "wagmi";
+import IconHeader from "@/sdk/templates/IconHeader";
 
 interface WalletBalanceProps extends CommandHandlerProps {
   client: CovalentClient;
 }
 
-const useStyles = createStyles((theme) => ({
-  root: {
-    padding: `calc(${theme.spacing.xl} * 1.5)`,
-  },
-
-  value: {
-    fontSize: rem(24),
-    fontWeight: 700,
-    lineHeight: 1,
-  },
-
-  diff: {
-    lineHeight: 1,
-    display: "flex",
-    alignItems: "center",
-  },
-
-  icon: {
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[3]
-        : theme.colors.gray[4],
-  },
-
-  title: {
-    fontWeight: 700,
-    textTransform: "uppercase",
-  },
-}));
-
-const WalletBalance: any = ({ client, query }: any) => {
+const WalletBalance: React.FC<WalletBalanceProps> = ({ client }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [wallet, setWallet] = useState<CovalentWalletBalanceResult[] | null>(
-    null
-  );
+  const [isError, setIsError] = useState<boolean>(false);
+  const [walletBalances, setWalletBalances] = useState<
+    CovalentWalletBalanceResult[]
+  >([]);
+
   const { address } = useAccount();
   const { chain } = useNetwork();
-  const { classes } = useStyles();
   const chainName = client.getChainName(chain?.id);
-  useEffect(() => {
-    if (!query) return;
 
+  const { data: ensName } = useEnsName({ address });
+
+  useEffect(() => {
     setIsLoading(true);
-    setWallet(null);
+    setIsError(false);
 
     let active = true;
 
     async function loadBalance() {
-      const client = new CovalentClient();
-
       const result = await client.getWalletBalance({ chainName, address });
-      console.log({ result });
-      if (!result) return;
-
       if (active) {
-        setWallet(result);
+        !result ? setIsError(true) : setWalletBalances(result);
         setIsLoading(false);
       }
     }
@@ -81,30 +50,69 @@ const WalletBalance: any = ({ client, query }: any) => {
 
     return () => {
       active = false;
+      setIsError(false);
       setIsLoading(false);
     };
-  }, [query]);
+  }, [client, address, chainName]);
 
-  if (!wallet) return null;
-  return wallet.map((token) => {
-    console.log()
-    return (
-      <Detail
-        isPending={isLoading}
-        isError={!isLoading && !token}
-        key={token.contract_name}
-      >
-        <Box>
-          <Group>
-            <Text size="xs" color="dimmed" className={classes.title}>
-              {token?.contract_name.toUpperCase()} 
-              {/* ({token?.contract_ticker_symbol?.toUpperCase()}) Price */}
-            </Text>
-          </Group>
-        </Box>
-      </Detail>
-    );
-  });
+  const shortenedAddress = useMemo(() => {
+    if (!address) return "";
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  }, [address]);
+
+  return (
+    <Detail isPending={isLoading} isError={isError}>
+      <Stack spacing="lg" m="md">
+        <IconHeader
+          title={ensName || shortenedAddress}
+          subtitle="Ethereum"
+          imageUrl={
+            ensName
+              ? `https://metadata.ens.domains/mainnet/avatar/${ensName}`
+              : undefined
+          }
+        />
+
+        {walletBalances
+          .filter((token) => !!token.contract_name)
+          .map((item, key) => {
+            const tokenAmount = Number.parseFloat(
+              ethers.utils.formatUnits(item.balance, item.contract_decimals)
+            );
+            const change = (item.quote - item.quote_24h) / 100;
+
+            if (!tokenAmount) return null;
+            return (
+              <Group key={key} position="apart">
+                <Group spacing="md">
+                  <Avatar size="md" radius="xl" src={item.logo_url} color="dark">
+                    {item?.contract_ticker_symbol}
+                  </Avatar>
+
+                  <Box>
+                    <Text size="sm" truncate>
+                      {`${tokenAmount.toFixed(4)} ${
+                        item?.contract_ticker_symbol
+                      }`}
+                    </Text>
+                    <Text size="xs" color="dimmed" truncate>
+                      {item?.contract_name}
+                    </Text>
+                  </Box>
+                </Group>
+
+                <Box ta="right">
+                  <Text>${item?.quote}</Text>
+                  <Text size="xs" color="dimmed">
+                    {change ? `${change.toFixed(2)}%` : ""}
+                  </Text>
+                </Box>
+              </Group>
+            );
+          })}
+      </Stack>
+    </Detail>
+  );
 };
 
 export default WalletBalance;

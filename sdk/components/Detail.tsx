@@ -1,4 +1,4 @@
-import { Alert, Box, Center, Skeleton } from "@mantine/core";
+import { Alert, Box, Center, ScrollArea, Skeleton } from "@mantine/core";
 import ReactMarkdown from "react-markdown";
 import { IconAlertCircle } from "@tabler/icons-react";
 
@@ -31,7 +31,7 @@ export const Detail: React.FC<DetailProps> = ({
           <ReactMarkdown>{markdown}</ReactMarkdown>
         </Center>
       ) : (
-        <Box>{children}</Box>
+        <ScrollArea.Autosize mah="35rem" type="auto">{children}</ScrollArea.Autosize>
       )}
     </Skeleton>
   );

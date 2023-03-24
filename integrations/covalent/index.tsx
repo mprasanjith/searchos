@@ -18,7 +18,6 @@ export class CovalentExtension extends Extension {
       name: "get-wallet-balance",
       title: `Get wallet balance`,
       description: "Get wallet balance via Covalent",
-      url: "api.covalenthq.com/",
       shouldHandle: (query: string) => {
         const wordsToHandle = ["wallet", "balance"];
         return wordsToHandle.some((word) => query.includes(word));
