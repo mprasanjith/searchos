@@ -3,7 +3,7 @@ import icon from "./icon.png";
 import { LiFiWidget, WidgetConfig } from "@lifi/widget";
 import dynamic from "next/dynamic";
 
-const bridgeWidgetConfig: WidgetConfig = {
+const widgetConfig: WidgetConfig = {
   disableI18n: true,
   disableTelemetry: true,
   integrator: "SearchOS",
@@ -26,13 +26,6 @@ const bridgeWidgetConfig: WidgetConfig = {
       fontWeightLight: "400 !important",
       fontWeightRegular: "400 !important",
     },
-  },
-};
-
-const swapWidgetConfig: WidgetConfig = {
-  ...bridgeWidgetConfig,
-  chains: {
-    allow: [1],
   },
 };
 
@@ -60,7 +53,7 @@ export class LiFiExtension extends Extension {
         const wordsToHandle = ["swap", "tokens", "exchange", "erc20", "dex"];
         return wordsToHandle.some((word) => query.includes(word));
       },
-      handler: ({}) => <LiFiWidgetDynamic config={swapWidgetConfig} />,
+      handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
     },
     {
         name: "bridge-tokens",
@@ -70,7 +63,7 @@ export class LiFiExtension extends Extension {
           const wordsToHandle = ["bridge", "tokens", "erc20", "crosschain", "cross-chain"];
           return wordsToHandle.some((word) => query.includes(word));
         },
-        handler: ({}) => <LiFiWidgetDynamic config={bridgeWidgetConfig} />,
+        handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
       },
   ];
 }
