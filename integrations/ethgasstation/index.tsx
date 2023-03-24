@@ -13,6 +13,7 @@ export class EthGasStationExtension extends Extension {
       name: "get-gas-price",
       title: "Get gas price",
       description: "Get gas prices from EthGasStation",
+      params: [],
       shouldHandle: (query: string) => {
         return query.trim().toLowerCase().includes("gas");
       },

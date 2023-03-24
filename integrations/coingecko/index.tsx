@@ -25,10 +25,10 @@ export interface CoinGeckoTokenDataResult {
     };
     high_24h: {
       usd: number;
-    }
+    };
     low_24h: {
       usd: number;
-    }
+    };
     price_change_percentage_24h: number;
     market_cap_change_percentage_24h: number;
   };
@@ -54,6 +54,7 @@ export class CoinGeckoExtension extends Extension {
       name: "get-price",
       title: (query) => `Get ${query?.toUpperCase()} token price`,
       description: "Get token prices via CoinGecko",
+      params: ["tokenSymbol"],
       url: (query) => {
         const token = this.client.findTokenMatch(query);
         return (
