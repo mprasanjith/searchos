@@ -1,5 +1,4 @@
 import { Command, Extension } from "@/sdk";
-import { HTTP } from "@/sdk/helpers";
 import { CoinGeckoClient } from "./client";
 import icon from "./icon.png";
 import TokenPrice from "./TokenPrice";
