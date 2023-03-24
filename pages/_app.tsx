@@ -2,34 +2,46 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { Box, ColorScheme, MantineProvider } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
-import { darkTheme, RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
+import {
+  darkTheme,
+  RainbowKitProvider,
+  getDefaultWallets,
+  lightTheme,
+} from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-import '@rainbow-me/rainbowkit/wallets'
+import "@rainbow-me/rainbowkit/wallets";
 import { WagmiConfig, createClient, configureChains, mainnet } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
+import { alchemyProvider } from "wagmi/providers/alchemy";
+
+const { chains, provider, webSocketProvider } = configureChains(
+  [mainnet],
+  process.env.NEXT_PUBLIC_ALCHEMY_ID
+    ? [
+        alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID }),
+        publicProvider(),
+      ]
+    : [publicProvider()]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: "SearchOS",
+  chains,
+});
+const client = createClient({
+  autoConnect: true,
+  provider,
+  webSocketProvider,
+  connectors,
+});
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
 
   const preferredColorScheme = useColorScheme();
 
+  // TOOD: Implement dark theme
   const colorScheme: ColorScheme = "light" || preferredColorScheme;
-
-  const { chains, provider, webSocketProvider } = configureChains(
-    [mainnet],
-    [publicProvider()]
-  );
-
-  const { connectors } = getDefaultWallets({
-    appName: "SearchOS",
-    chains,
-  })
-  const client = createClient({
-    autoConnect: true,
-    provider,
-    webSocketProvider,
-    connectors
-  });
 
   return (
     <>
@@ -43,9 +55,15 @@ export default function App(props: AppProps) {
       <WagmiConfig client={client}>
         <RainbowKitProvider
           chains={chains}
-          theme={darkTheme({
-            accentColor: "black",
-          })}
+          theme={
+            colorScheme === "dark"
+              ? darkTheme({
+                  accentColor: "black",
+                })
+              : lightTheme({
+                  accentColor: "black",
+                })
+          }
           coolMode={true}
         >
           <MantineProvider

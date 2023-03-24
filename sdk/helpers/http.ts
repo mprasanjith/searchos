@@ -1,12 +1,12 @@
 export class HTTP {
   async get<T>(url: string, options?: any) {
-    const request = await fetch(url, options);
+    const res = await fetch(url, options);
 
-    if (request.status !== 200) {
-      throw new Error(`Request to ${url} returned an error`);
+    if (res.status !== 200) {
+      throw new Error(`res to ${url} returned an error`);
     }
 
-    const response: T = await (options?.plainText ? request.text() : request.json());
+    const response: T = await (options?.plainText ? res.text() : res.json());
     return response;
   }
 
@@ -16,7 +16,7 @@ export class HTTP {
 
     const encodedBody = contentType === 'application/json' ? JSON.stringify(body) : body;
 
-    const request = await fetch(url, {
+    const res = await fetch(url, {
       ...options,
       headers: {
         'content-type': contentType,
@@ -26,11 +26,11 @@ export class HTTP {
       method: 'POST',
     });
 
-    if (request.status !== 200) {
-      throw new Error(`Request to ${url} returned an error (${request.status})`);
+    if (res.status !== 200) {
+      throw new Error(`res to ${url} returned an error (${res.status})`);
     }
 
-    const response: T = await (options?.plainText ? request.text() : request.json());
+    const response: T = await (options?.plainText ? res.text() : res.json());
 
     return response;
   }

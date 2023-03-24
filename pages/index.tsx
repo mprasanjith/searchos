@@ -2,12 +2,16 @@ import Searchbox from "@/components/Searchbox";
 import { CoinGeckoExtension } from "@/integrations/coingecko";
 import { EthGasStationExtension } from "@/integrations/ethgasstation";
 import { useEffect, useMemo } from "react";
-import { Container, Center } from "@mantine/core";
 import { WalletButton } from "@/components/WalletButton";
+import { ERC20TransferExtension } from "@/integrations/erc20transfer";
 
 const Index = () => {
   const extensions = useMemo(() => {
-    return [new CoinGeckoExtension(), new EthGasStationExtension()];
+    return [
+      new ERC20TransferExtension(),
+      new CoinGeckoExtension(),
+      new EthGasStationExtension(),
+    ];
   }, []);
 
   useEffect(() => {
@@ -16,8 +20,8 @@ const Index = () => {
 
   return (
     <>
-        <WalletButton />
-        <Searchbox extensions={extensions} />
+      <WalletButton />
+      <Searchbox extensions={extensions} />
     </>
   );
 };

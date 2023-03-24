@@ -1,6 +1,6 @@
 export * from "./Detail";
 
-// Export selected Mantine components
-export { Box, Group, Text, Avatar, Center, Flex, Title, Stack, Button, Skeleton, createStyles, rem } from "@mantine/core";
+export * from "@mantine/core";
+export * from "@mantine/form"
 
 export * from "@tabler/icons-react";

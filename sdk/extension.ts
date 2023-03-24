@@ -10,10 +10,11 @@ export interface Command {
   name: string;
   title: string | ParsedQueryFn;
   description: string | ParsedQueryFn;
-  url: string | ParsedQueryFn;
+  url?: string | ParsedQueryFn;
   cta?: string | ParsedQueryFn;
   shouldHandle: (query: string) => boolean;
   handler: React.FC<CommandHandlerProps>;
+  requireWallet?: boolean;
 }
 
 export interface UserQuery {
