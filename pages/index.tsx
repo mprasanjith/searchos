@@ -5,11 +5,13 @@ import { CovalentExtension } from "@/integrations/covalent";
 import { useEffect, useMemo } from "react";
 import { WalletButton } from "@/components/WalletButton";
 import { ERC20TransferExtension } from "@/integrations/erc20transfer";
+import { LiFiExtension } from "@/integrations/lifi";
 
 const Index = () => {
   const extensions = useMemo(() => {
     return [
       new ERC20TransferExtension(),
+      new LiFiExtension(),
       new CoinGeckoExtension(),
       new EthGasStationExtension(),
       new CovalentExtension(),
