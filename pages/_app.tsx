@@ -56,13 +56,14 @@ export default function App(props: AppProps) {
         <RainbowKitProvider
           chains={chains}
           theme={
-            colorScheme === "dark"
-              ? darkTheme({
-                  accentColor: "black",
-                })
-              : lightTheme({
-                  accentColor: "black",
-                })
+            // colorScheme === "dark"
+            //   ? darkTheme({
+            //       accentColor: "black",
+            //     })
+            //   :
+            lightTheme({
+              accentColor: "black",
+            })
           }
           coolMode={true}
         >
