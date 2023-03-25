@@ -2,7 +2,6 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { Box, ColorScheme, MantineProvider } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
-import "../styles/global.css";
 import {
   darkTheme,
   RainbowKitProvider,
@@ -15,6 +14,7 @@ import { WagmiConfig, createClient, configureChains, mainnet } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import ExtensionsProvider from "@/components/ExtensionsProvider";
+import "../styles/global.css";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet],

@@ -70,8 +70,8 @@ export class LiFiExtension extends Extension {
       },
       shouldHandle: (query: string) => {
         const wordsToHandle = ["swap", "exchange"];
-        return wordsToHandle.some((word) =>
-          query.trim().toLowerCase().includes(word)
+        return wordsToHandle.some(
+          (word) => query.trim().toLowerCase() === word
         );
       },
       handler: ({ assistantQuery }) => {
@@ -113,7 +113,9 @@ export class LiFiExtension extends Extension {
           "crosschain",
           "cross-chain",
         ];
-        return wordsToHandle.some((word) => query.includes(word));
+        return wordsToHandle.some(
+          (word) => query.trim().toLowerCase() === word
+        );
       },
       handler: ({ assistantQuery }) => {
         const params: SwapParams = {
