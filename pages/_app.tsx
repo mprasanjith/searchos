@@ -2,6 +2,7 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { Box, ColorScheme, MantineProvider } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
+import "../styles/global.css";
 import {
   darkTheme,
   RainbowKitProvider,
