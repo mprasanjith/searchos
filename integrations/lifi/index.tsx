@@ -74,20 +74,20 @@ export class LiFiExtension extends Extension {
           (word) => query.trim().toLowerCase() === word
         );
       },
-      handler: ({ assistantQuery }) => {
+      handler: ({ assistantQuery, chainId }) => {
         const params: SwapParams = {
-          fromChain: 1,
-          toChain: 1,
+          fromChain: chainId,
+          toChain: chainId,
         };
 
         if (assistantQuery) {
           const inTokenSymbol = assistantQuery["inToken"];
-          const inToken = this.tokenListClient.findTokenBySymbol(inTokenSymbol);
+          const inToken = this.tokenListClient.findTokenBySymbol(inTokenSymbol, chainId);
           if (inToken) params.fromToken = inToken.address;
 
           const outTokenSymbol = assistantQuery["outToken"];
           const outToken =
-            this.tokenListClient.findTokenBySymbol(outTokenSymbol);
+            this.tokenListClient.findTokenBySymbol(outTokenSymbol, chainId);
           if (outToken) params.toToken = outToken.address;
 
           const sendAmount = sanitizeAmount(assistantQuery["sendAmount"]);
@@ -103,7 +103,7 @@ export class LiFiExtension extends Extension {
       description: "Bridge tokens via LI.FI aggregator",
       assistant: {
         description: "Swap tokens",
-        params: ["inToken", "outToken", "sendAmount", "fromChain", "toChain"],
+        params: ["inToken", "outToken", "sendAmount", "toChain"],
       },
       shouldHandle: (query: string) => {
         const wordsToHandle = [
@@ -117,19 +117,19 @@ export class LiFiExtension extends Extension {
           (word) => query.trim().toLowerCase() === word
         );
       },
-      handler: ({ assistantQuery }) => {
+      handler: ({ assistantQuery, chainId }) => {
         const params: SwapParams = {
-          fromChain: 1,
+          fromChain: chainId,
         };
 
         if (assistantQuery) {
           const inTokenSymbol = assistantQuery["inToken"];
-          const inToken = this.tokenListClient.findTokenBySymbol(inTokenSymbol);
+          const inToken = this.tokenListClient.findTokenBySymbol(inTokenSymbol, chainId);
           if (inToken) params.fromToken = inToken.address;
 
           const outTokenSymbol = assistantQuery["outToken"];
           const outToken =
-            this.tokenListClient.findTokenBySymbol(outTokenSymbol);
+            this.tokenListClient.findTokenBySymbol(outTokenSymbol, chainId);
           if (outToken) params.toToken = outToken.address;
 
           const sendAmount = sanitizeAmount(assistantQuery["sendAmount"]);

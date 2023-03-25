@@ -24,7 +24,7 @@ export class EthGasStationExtension extends Extension {
         return query.trim().toLowerCase().includes("gas");
       },
       url: "https://ethgasstation.info/",
-      handler: ({ query }) => <GasPrice client={this.client} query={query} />,
+      handler: () => <GasPrice client={this.client} />,
     },
   ];
 

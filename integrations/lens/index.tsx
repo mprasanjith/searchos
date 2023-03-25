@@ -19,7 +19,7 @@ export class LensExtension extends Extension {
     {
       name: "get-lens-profile",
       title: "Get Lens profile",
-      description: "Get Lens Profile with the Lens SDK",
+      description: "Get Lens Profile via the Lens Protocol",
       assistant: {
         description: "Get Lens Protocol Profile",
         params: ["lensHandle"],
