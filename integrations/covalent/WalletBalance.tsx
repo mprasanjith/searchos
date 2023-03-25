@@ -27,7 +27,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client, query }) => {
   const [walletBalances, setWalletBalances] = useState<
     CovalentWalletBalanceResult[]
   >([]);
-  const queryRef = useRef(query);
+  const queryRef = useRef<any>(query);
   const { address } = useAccount();
   const { chain } = useNetwork();
   const chainId = chain?.id;
@@ -43,16 +43,17 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client, query }) => {
     let active = true;
 
     function replaceQuery() {
-      if (address) {
-        queryRef.current = address;
-      }
+      queryRef.current = ensName || address;
     }
 
     async function loadBalance() {
       if (match(query)) {
         replaceQuery();
       }
-      const result = await client.getWalletBalance({ chainId, address: queryRef.current });
+      const result = await client.getWalletBalance({
+        chainId,
+        address: queryRef.current,
+      });
 
       if (active) {
         !result ? setIsError(true) : setWalletBalances(result);
@@ -71,10 +72,10 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client, query }) => {
 
   const shortenedAddress = useMemo(() => {
     if (!query) return "";
-    if (queryRef.current.startsWith("0x") || match(queryRef.current)) {
+    if (queryRef.current.startsWith("0x") || match(query)) {
       return `${queryRef.current.slice(0, 6)}...${queryRef.current.slice(-4)}`;
     }
-  }, [query]);
+  }, [queryRef.current]);
 
   return (
     <Detail isPending={isLoading} isError={isError}>
