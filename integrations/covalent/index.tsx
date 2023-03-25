@@ -1,6 +1,6 @@
 import { Command, Extension } from "@/sdk";
 import { CovalentClient } from "./client";
-import icon from "./icon.png";
+import icon from "./icon.jpg";
 import WalletBalance from "./WalletBalance";
 import { isAddress } from "ethers/lib/utils.js";
 export class CovalentExtension extends Extension {
@@ -23,6 +23,10 @@ export class CovalentExtension extends Extension {
         params: ["walletAddress"],
       },
       shouldHandle: (query: string) => {
+        if (["balance", "wallet"].some((keyword) => query === keyword)) {
+          return true;
+        }
+
         return (
           !query.includes(" ") &&
           (query.trim().endsWith(".eth") || isAddress(query.trim()))
@@ -30,22 +34,35 @@ export class CovalentExtension extends Extension {
       },
       handler: ({ query, assistantQuery }) => {
         const normalizedQuery = query.trim().toLowerCase();
-        const assistantNormalizedQuery = assistantQuery?.["walletAddress"]
-          ?.trim()
-          .toLowerCase();
+
+        const ownBalance = ["balance", "wallet"].some(
+          (keyword) => normalizedQuery === keyword
+        );
+
 
         let address: `0x${string}` | string | null = null;
-        if (
-          assistantNormalizedQuery &&
-          (isAddress(assistantNormalizedQuery) ||
-            assistantNormalizedQuery.endsWith(".eth"))
-        ) {
-          address = assistantNormalizedQuery;
-        } else {
-          address = normalizedQuery;
+        if (!ownBalance) {
+          const assistantNormalizedQuery = assistantQuery?.["walletAddress"]
+            ?.trim()
+            .toLowerCase();
+
+          if (
+            assistantNormalizedQuery &&
+            (isAddress(assistantNormalizedQuery) ||
+              assistantNormalizedQuery.endsWith(".eth"))
+          ) {
+            address = assistantNormalizedQuery;
+          } else {
+            address = normalizedQuery;
+          }
         }
 
-        return <WalletBalance client={this.client} addressOrEns={address} />;
+        return (
+          <WalletBalance
+            client={this.client}
+            addressOrEns={!ownBalance ? address : null}
+          />
+        );
       },
     },
   ];

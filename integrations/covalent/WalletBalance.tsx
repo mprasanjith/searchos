@@ -8,6 +8,7 @@ import {
   useEnsName,
   ethers,
   useEnsAddress,
+  useAccount,
 } from "@/sdk";
 import useSWR from "swr";
 import { useMemo } from "react";
@@ -16,31 +17,39 @@ import IconHeader from "@/sdk/templates/IconHeader";
 
 interface WalletBalanceProps {
   client: CovalentClient;
-  addressOrEns: `0x${string}` | string;
+  addressOrEns?: `0x${string}` | string | null;
 }
 
 const WalletBalance: React.FC<WalletBalanceProps> = ({
   client,
   addressOrEns,
 }) => {
+  const { address: userAddress } = useAccount();
+
+  const addressToUse = addressOrEns || userAddress;
+
+  console.log({ addressToUse })
+
   const { data: address } = useEnsAddress({
-    name: addressOrEns,
-    enabled: addressOrEns.endsWith(".eth"),
+    name: addressToUse,
+    enabled: addressToUse?.endsWith(".eth"),
   });
 
   const { data: ensName } = useEnsName({
-    address: addressOrEns as `0x${string}`,
-    enabled: addressOrEns.startsWith("0x"),
+    address: addressToUse as `0x${string}`,
+    enabled: addressToUse?.startsWith("0x"),
   });
 
   const resolvedEnsName = useMemo(
-    () => (addressOrEns.endsWith(`.eth`) ? addressOrEns : ensName),
-    [addressOrEns, ensName]
+    () => (addressToUse?.endsWith(`.eth`) ? addressToUse : ensName),
+    [ensName, addressToUse]
   );
   const resolvedAddress = useMemo(
     () =>
-      addressOrEns.startsWith(`0x`) ? (addressOrEns as `0x${string}`) : address,
-    [addressOrEns, address]
+      addressToUse?.startsWith(`0x`)
+        ? (addressToUse as `0x${string}`)
+        : address,
+    [addressToUse, address]
   );
 
   const {
