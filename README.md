@@ -4,7 +4,7 @@
 
 **All your favorite web3 actions, one search away 🔎**
 
-SearchOS is a web3 search engine making it easy to interact with your favorite blockchain applications.
+SearchOS is a web3 search engine making it easy to interact with your favorite blockchain applications. Query wallet balances, see real-time prices, swap, bridge, and send tokens (cross-chain) in just a few clicks.
 
 - 🤓 Out-of-the-box natural language processing
 - 🛠️ Endless integration opportunities
