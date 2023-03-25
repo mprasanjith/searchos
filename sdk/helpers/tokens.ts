@@ -40,6 +40,6 @@ export class TokenListClient {
   }
 
   async getTokenlist() {
-    return this.http.get<TokenListResult>(`https://tokens.1inch.eth.limo`);
+    return this.http.get<TokenListResult>(`https://tokens.coingecko.com/uniswap/all.json`);
   }
 }

@@ -13,13 +13,15 @@ export const sanitizeAddress = (address: string) => {
   return null;
 };
 
-export const sanitizeENS = (ensName: string) => {
+export const sanitizeENS = (ensName: string, tld: string = ".eth") => {
   if (!ensName) return null;
 
   const normalizedENS = ensName?.trim().toLowerCase();
 
-  if (normalizedENS.endsWith(".eth") && !normalizedENS.includes(" ")) {
-    return normalizedENS;
+  if (!normalizedENS.includes(" ")) {
+    return normalizedENS.endsWith(tld)
+      ? normalizedENS
+      : `${normalizedENS}${tld}`;
   }
 
   return null;

@@ -2,6 +2,7 @@ import { Command, Extension } from "@/sdk";
 import LensProfile from "./Lens";
 import icon from "./icon.png";
 import LensClient, { polygon } from "@lens-protocol/client";
+import { sanitizeENS } from "@/sdk/helpers/sanitizers";
 
 export class LensExtension extends Extension {
   private client: LensClient = new LensClient({
@@ -24,14 +25,24 @@ export class LensExtension extends Extension {
         params: ["lensHandle"],
       },
       shouldHandle: (query: string) => {
-        return query.trim().toLowerCase().includes(".lens");
+        return query.trim().toLowerCase().endsWith(".lens");
       },
       url: (query: string) => {
-        return `https://lenster.xyz/u/${query.replace(".lens", "")}`;
+        const handle = query.trim().toLowerCase();
+        return `https://lenster.xyz/u/${handle.replace(".lens", "")}`;
       },
-      handler: ({ query }) => (
-        <LensProfile query={query} client={this.client} />
-      ),
+      handler: ({ query, assistantQuery }) => {
+        let handle = assistantQuery?.["lensHandle"] || query;
+
+        const handleNormalized = sanitizeENS(
+          handle.trim().toLowerCase(),
+          ".lens"
+        );
+
+        if (!handleNormalized) return null;
+
+        return <LensProfile client={this.client} handle={handleNormalized} />;
+      },
     },
   ];
 

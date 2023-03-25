@@ -6,18 +6,18 @@ import IconHeader from "@/sdk/templates/IconHeader";
 import { ProfileFragment } from "@lens-protocol/client";
 import LensClient from "@lens-protocol/client/dist/declarations/src";
 
-interface LensProfileProps extends CommandHandlerProps {
-  query: string;
+interface LensProfileProps {
+  handle: string;
   client: LensClient;
 }
 
-const LensProfile: React.FC<LensProfileProps> = ({ client, query }) => {
+const LensProfile: React.FC<LensProfileProps> = ({ client, handle }) => {
   const {
     data: profile,
     isLoading,
     error,
-  } = useSWR(`lens:get-lens-profile:${query}`, async () => {
-    return client.profile.fetch({ handle: query });
+  } = useSWR(`lens:get-lens-profile:${handle}`, async () => {
+    return client.profile.fetch({ handle });
   });
 
   return (
