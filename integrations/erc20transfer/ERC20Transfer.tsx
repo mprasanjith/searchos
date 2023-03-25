@@ -27,19 +27,10 @@ import {
 import TextHeader from "@/sdk/templates/TextHeader";
 import { forwardRef, useEffect, useMemo } from "react";
 import useSWR from "swr";
+import { ERC20TransferParams } from ".";
+import { TokenListToken } from "@/sdk/helpers/tokens";
 
-interface ERC20Transfer extends CommandHandlerProps {}
-
-interface Token {
-  chainId: number;
-  address: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  logoURI: string;
-}
-
-type ItemProps = SelectItemProps & Token;
+type ItemProps = SelectItemProps & TokenListToken;
 
 const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ value, name, symbol, logoURI, ...others }: ItemProps, ref) => (
@@ -64,16 +55,25 @@ SelectItem.displayName = "AutoCompleteItem";
 
 const http = new HTTP();
 
-const ERC20Transfer: React.FC<ERC20Transfer> = ({ query }) => {
-  const { data: tokenList } = useSWR<{ tokens: Token[] }>(
-    "https://tokens.1inch.eth.limo",
-    http.get
-  );
+interface ERC20TransferProps {
+  params: ERC20TransferParams;
+  tokenList: TokenListToken[];
+}
 
-  const tokens = useMemo(() => tokenList?.tokens || [], [tokenList]);
+const ERC20Transfer: React.FC<ERC20TransferProps> = ({
+  params,
+  tokenList: tokens,
+}) => {
+  const parsedParams = useMemo(() => {
+    return {
+      address: params.receiverAddress || "",
+      amount: params.sendAmount || "1",
+      token: params.token || "",
+    };
+  }, [params]);
 
   const form = useForm({
-    initialValues: { address: "", amount: "1", token: "" },
+    initialValues: parsedParams,
     validate: {
       address: (value) => {
         let isAddress = false;
@@ -170,7 +170,10 @@ const ERC20Transfer: React.FC<ERC20Transfer> = ({ query }) => {
     <Detail isError={false} isPending={false}>
       <form onSubmit={form.onSubmit(onSubmit)}>
         <Box mih="35rem">
-          <TextHeader title="Send Tokens" subtitle={`from ${ensName || "your wallet"}`} />
+          <TextHeader
+            title="Send Tokens"
+            subtitle={`from ${ensName || "your wallet"}`}
+          />
           <Box m="xl">
             <TextInput
               label="Wallet address"
