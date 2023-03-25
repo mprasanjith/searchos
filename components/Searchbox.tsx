@@ -1,6 +1,6 @@
 import { Button, Flex, useMantineTheme } from "@mantine/core";
 import { useMemo } from "react";
-import { Search, Searcher, Theme, Option } from "@/components/searchpal/lib";
+import { Search, Searcher, Theme, Option } from "searchpal";
 import Media from "@/components/Media";
 import { Command, Extension } from "@/sdk";
 import Preview from "./Preview";
@@ -20,7 +20,7 @@ const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
   const theme = useMemo(() => {
     const theme = new Theme({
       light: {
-        shadow: mantineTheme.shadows.xs,
+        shadow: mantineTheme.shadows.xl,
         accent: mantineTheme.primaryColor,
         accentText: mantineTheme.white,
         background: mantineTheme.white,

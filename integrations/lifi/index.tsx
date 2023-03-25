@@ -19,8 +19,7 @@ const widgetConfig: WidgetConfig = {
       secondary: { main: "#373A40" },
     },
     typography: {
-      fontFamily:
-        "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji",
+      fontFamily: `SFRounded, ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
       fontWeightBold: "400 !important",
       fontWeightMedium: "400 !important",
       fontWeightLight: "400 !important",
@@ -56,14 +55,20 @@ export class LiFiExtension extends Extension {
       handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
     },
     {
-        name: "bridge-tokens",
-        title: `Bridge tokens`,
-        description: "Bridge tokens via LI.FI aggregator",
-        shouldHandle: (query: string) => {
-          const wordsToHandle = ["bridge", "tokens", "erc20", "crosschain", "cross-chain"];
-          return wordsToHandle.some((word) => query.includes(word));
-        },
-        handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
+      name: "bridge-tokens",
+      title: `Bridge tokens`,
+      description: "Bridge tokens via LI.FI aggregator",
+      shouldHandle: (query: string) => {
+        const wordsToHandle = [
+          "bridge",
+          "tokens",
+          "erc20",
+          "crosschain",
+          "cross-chain",
+        ];
+        return wordsToHandle.some((word) => query.includes(word));
       },
+      handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
+    },
   ];
 }
