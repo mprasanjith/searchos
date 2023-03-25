@@ -2,6 +2,8 @@ import { Command, Extension, Skeleton } from "@/sdk";
 import icon from "./icon.png";
 import { LiFiWidget, WidgetConfig } from "@lifi/widget";
 import dynamic from "next/dynamic";
+import { TokenListClient } from "@/sdk/helpers/tokens";
+import { sanitizeAmount } from "@/sdk/helpers/sanitizers";
 
 const widgetConfig: WidgetConfig = {
   disableI18n: true,
@@ -36,12 +38,26 @@ const LiFiWidgetDynamic = dynamic(
   }
 ) as typeof LiFiWidget;
 
+interface SwapParams {
+  fromToken?: string;
+  toToken?: string;
+  fromAmount?: number;
+  fromChain?: number;
+  toChain?: number;
+}
+
 export class LiFiExtension extends Extension {
+  private tokenListClient = new TokenListClient();
+
   name = "lifi";
   title = "LI.FI";
   description = "LI.FI is a cross-chain bridge aggregation protocol.";
   author = "SearchOS";
   icon = icon;
+
+  async initialize() {
+    await this.tokenListClient.initialize();
+  }
 
   commands: Command[] = [
     {
@@ -50,13 +66,36 @@ export class LiFiExtension extends Extension {
       description: "Swap tokens via LI.FI aggregator",
       assistant: {
         description: "Swap tokens",
-        params: ["inToken", "outToken", "sendAmount", "receiveAmount"],
+        params: ["inToken", "outToken", "sendAmount"],
       },
       shouldHandle: (query: string) => {
-        const wordsToHandle = ["swap", "tokens", "exchange", "erc20", "dex"];
-        return wordsToHandle.some((word) => query.includes(word));
+        const wordsToHandle = ["swap", "exchange"];
+        return wordsToHandle.some((word) =>
+          query.trim().toLowerCase().includes(word)
+        );
       },
-      handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
+      handler: ({ assistantQuery }) => {
+        const params: SwapParams = {
+          fromChain: 1,
+          toChain: 1,
+        };
+
+        if (assistantQuery) {
+          const inTokenSymbol = assistantQuery["inToken"];
+          const inToken = this.tokenListClient.findTokenBySymbol(inTokenSymbol);
+          if (inToken) params.fromToken = inToken.address;
+
+          const outTokenSymbol = assistantQuery["outToken"];
+          const outToken =
+            this.tokenListClient.findTokenBySymbol(outTokenSymbol);
+          if (outToken) params.toToken = outToken.address;
+
+          const sendAmount = sanitizeAmount(assistantQuery["sendAmount"]);
+          if (sendAmount) params.fromAmount = Number.parseFloat(sendAmount);
+        }
+
+        return <LiFiWidgetDynamic config={{ ...widgetConfig, ...params }} />;
+      },
     },
     {
       name: "bridge-tokens",
@@ -64,14 +103,7 @@ export class LiFiExtension extends Extension {
       description: "Bridge tokens via LI.FI aggregator",
       assistant: {
         description: "Swap tokens",
-        params: [
-          "inToken",
-          "outToken",
-          "sendAmount",
-          "receiveAmount",
-          "fromChain",
-          "toChain",
-        ],
+        params: ["inToken", "outToken", "sendAmount", "fromChain", "toChain"],
       },
       shouldHandle: (query: string) => {
         const wordsToHandle = [
@@ -83,7 +115,27 @@ export class LiFiExtension extends Extension {
         ];
         return wordsToHandle.some((word) => query.includes(word));
       },
-      handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
+      handler: ({ assistantQuery }) => {
+        const params: SwapParams = {
+          fromChain: 1,
+        };
+
+        if (assistantQuery) {
+          const inTokenSymbol = assistantQuery["inToken"];
+          const inToken = this.tokenListClient.findTokenBySymbol(inTokenSymbol);
+          if (inToken) params.fromToken = inToken.address;
+
+          const outTokenSymbol = assistantQuery["outToken"];
+          const outToken =
+            this.tokenListClient.findTokenBySymbol(outTokenSymbol);
+          if (outToken) params.toToken = outToken.address;
+
+          const sendAmount = sanitizeAmount(assistantQuery["sendAmount"]);
+          if (sendAmount) params.fromAmount = Number.parseFloat(sendAmount);
+        }
+
+        return <LiFiWidgetDynamic config={{ ...widgetConfig, ...params }} />;
+      },
     },
   ];
 }
