@@ -1,6 +1,6 @@
 import { Command, Extension } from "@/sdk";
 import { CoinGeckoClient } from "./client";
-import icon from "./icon.png";
+import icon from "./icon.jpg";
 import TokenPrice from "./TokenPrice";
 
 export interface CoinGeckoTokenResult {

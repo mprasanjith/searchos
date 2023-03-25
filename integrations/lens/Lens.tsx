@@ -1,9 +1,7 @@
-import { Box, CommandHandlerProps, Detail, Group, Stack, Text } from "@/sdk";
-import { useEffect, useState } from "react";
+import { Box, Detail, Group, Stack, Text } from "@/sdk";
 import useSWR from "swr";
-import icon from "./icon.png";
+import icon from "./icon.jpg";
 import IconHeader from "@/sdk/templates/IconHeader";
-import { ProfileFragment } from "@lens-protocol/client";
 import LensClient from "@lens-protocol/client/dist/declarations/src";
 
 interface LensProfileProps {

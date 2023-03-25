@@ -1,6 +1,6 @@
 import { Command, Extension } from "@/sdk";
 import LensProfile from "./Lens";
-import icon from "./icon.png";
+import icon from "./icon.jpg";
 import LensClient, { polygon } from "@lens-protocol/client";
 import { sanitizeENS } from "@/sdk/helpers/sanitizers";
 

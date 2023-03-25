@@ -1,13 +1,11 @@
 import { Command, Extension } from "@/sdk";
-import icon from "./icon.png";
+import icon from "./icon.jpg";
 import ERC20Transfer from "./ERC20Transfer";
 import {
   sanitizeAddress,
   sanitizeAmount,
-  sanitizeAmountBigNumber,
   sanitizeENS,
 } from "@/sdk/helpers/sanitizers";
-import { BigNumberish } from "ethers";
 import { TokenListClient } from "@/sdk/helpers/tokens";
 
 export interface ERC20TransferParams {

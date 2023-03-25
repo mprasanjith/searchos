@@ -1,5 +1,5 @@
 import { Command, Extension } from "@/sdk";
-import icon from "./icon.jpeg";
+import icon from "./icon.jpg";
 import ChatGPT from "./ChatGPT";
 import { ChatGPTClient } from "./client";
 

@@ -1,7 +1,7 @@
 import { Box, CommandHandlerProps, Detail } from "@/sdk";
 import useSWR from "swr";
 import { EthGasStationClient } from "./client";
-import icon from "./icon.png";
+import icon from "./icon.jpg";
 import IconHeader from "@/sdk/templates/IconHeader";
 import DetailsGrid from "@/sdk/templates/DetailsGrid";
 

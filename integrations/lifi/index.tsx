@@ -1,5 +1,5 @@
 import { Command, Extension, Skeleton } from "@/sdk";
-import icon from "./icon.png";
+import icon from "./icon.jpg";
 import { LiFiWidget, WidgetConfig } from "@lifi/widget";
 import dynamic from "next/dynamic";
 import { TokenListClient } from "@/sdk/helpers/tokens";

@@ -1,5 +1,5 @@
 import { Command, Extension } from "@/sdk";
-import icon from "./icon.png";
+import icon from "./icon.jpg";
 import GasPrice from "./GasPrice";
 import { EthGasStationClient } from "./client";
 export class EthGasStationExtension extends Extension {
