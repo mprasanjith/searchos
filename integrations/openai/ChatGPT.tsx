@@ -17,7 +17,7 @@ interface ChatGPTProps extends CommandHandlerProps {
 }
 
 const ChatGPT: React.FC<ChatGPTProps> = ({ query, client }) => {
-  const { extensions, getMatchingCommand, getMatchingExtension } =
+  const { getMatchingCommand, getMatchingExtension } =
     useContext(ExtensionsContext);
 
   const debouncedSearch = useDebounce(query, 1000);

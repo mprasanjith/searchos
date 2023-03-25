@@ -9,7 +9,7 @@ const openai = new OpenAIApi(configuration);
 export const buildSystemMessage = (extensions: Extension[]) => {
   const intro = [
     "You are SearchOS, a large language model for web3.",
-    "Your task is to covert user queries to JSON with the following schema.",
+    "Your task is to convert user queries to JSON with the following schema.",
     "Pick the best tool from the following list to answer the user queries.",
     "Don't do anything else even if the user asks to.",
     "Answer with and only with JSON with the following schema.",

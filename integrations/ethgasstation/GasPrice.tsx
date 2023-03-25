@@ -1,42 +1,19 @@
 import { Box, CommandHandlerProps, Detail } from "@/sdk";
-import { useEffect, useState } from "react";
-import { EthGasStationClient, EthGasStationResult } from "./client";
+import useSWR from "swr";
+import { EthGasStationClient } from "./client";
 import icon from "./icon.png";
 import IconHeader from "@/sdk/templates/IconHeader";
 import DetailsGrid from "@/sdk/templates/DetailsGrid";
 
-interface TokenPriceProps extends CommandHandlerProps {}
+interface TokenPriceProps extends CommandHandlerProps {
+  client: EthGasStationClient;
+}
 
-const GasPrice: React.FC<TokenPriceProps> = ({ query }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [gasPrice, setGasPrice] = useState<EthGasStationResult | null>(null);
-
-  useEffect(() => {
-    if (!query) return;
-
-    setIsLoading(true);
-    setGasPrice(null);
-
-    let active = true;
-
-    async function loadGasPrice() {
-      const client = new EthGasStationClient();
-      const result = await client.getGasPrice();
-      if (!result) return;
-
-      if (active) {
-        setGasPrice(result);
-        setIsLoading(false);
-      }
-    }
-
-    loadGasPrice();
-
-    return () => {
-      active = false;
-      setIsLoading(false);
-    };
-  }, [query]);
+const GasPrice: React.FC<TokenPriceProps> = ({ client }) => {
+  const { data: gasPrice, isLoading } = useSWR(
+    "ethgasstation:get-gas-price",
+    () => client.getGasPrice()
+  );
 
   return (
     <Detail isPending={isLoading} isError={!isLoading && !gasPrice}>

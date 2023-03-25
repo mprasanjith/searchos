@@ -23,7 +23,10 @@ export class CovalentExtension extends Extension {
         params: ["walletAddress"],
       },
       shouldHandle: (query: string) => {
-        return query.trim().endsWith(".eth") || isAddress(query.trim());
+        return (
+          !query.includes(" ") &&
+          (query.trim().endsWith(".eth") || isAddress(query.trim()))
+        );
       },
       handler: ({ query, assistantQuery }) => {
         const normalizedQuery = query.trim().toLowerCase();
