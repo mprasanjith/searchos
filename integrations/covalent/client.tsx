@@ -1,5 +1,4 @@
 import { HTTP } from "@/sdk/helpers";
-import { useNetwork } from "wagmi";
 
 export type CovalentResponse = {
   data: {
@@ -7,11 +6,11 @@ export type CovalentResponse = {
     chain_id: number;
     chain_name: string;
     items: CovalentWalletBalanceResult[];
-  }
+  };
   error: boolean;
   error_message: string;
   error_code: number;
-}
+};
 
 export type CovalentWalletBalanceResult = {
   contract_decimals: number;
@@ -32,29 +31,18 @@ export type CovalentWalletBalanceResult = {
   nft_data: any;
 };
 
-const COVALENT_CHAIN_NAME_MAP: Record<number, string> = {
-  1: "eth-mainnet",
-  10: "optimism-mainnet",
-  137: "matic-mainnet",
-};
-
 export class CovalentClient {
   private http: HTTP = new HTTP();
 
-  getChainName(chainId: number | undefined | null) {
-    if(!chainId) return null
-    return COVALENT_CHAIN_NAME_MAP[chainId];
-  }
-
   async getWalletBalance({
-    chainName,
+    chainId,
     address,
   }: {
-    chainName: string | null;
+    chainId: number | undefined;
     address: `0x${string}` | undefined;
   }) {
-    const url = `https://api.covalenthq.com/v1/${chainName}/address/${address}/balances_v2/?key=${process.env.NEXT_PUBLIC_COVALENT_API_KEY}`;
-    const result = await this.http.get<CovalentResponse>(url) 
-    return result.data.items
+    const url = `https://api.covalenthq.com/v1/${chainId}/address/${address}/balances_v2/?key=${process.env.NEXT_PUBLIC_COVALENT_API_KEY}`;
+    const result = await this.http.get<CovalentResponse>(url);
+    return result.data.items;
   }
 }

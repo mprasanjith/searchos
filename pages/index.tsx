@@ -6,6 +6,7 @@ import { useEffect, useMemo } from "react";
 import { WalletButton } from "@/components/WalletButton";
 import { ERC20TransferExtension } from "@/integrations/erc20transfer";
 import { LiFiExtension } from "@/integrations/lifi";
+import { LensExtension } from "@/integrations/lens";
 
 const Index = () => {
   const extensions = useMemo(() => {
@@ -15,6 +16,7 @@ const Index = () => {
       new CoinGeckoExtension(),
       new EthGasStationExtension(),
       new CovalentExtension(),
+      new LensExtension(),
     ];
   }, []);
 

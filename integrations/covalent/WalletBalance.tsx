@@ -28,7 +28,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client }) => {
 
   const { address } = useAccount();
   const { chain } = useNetwork();
-  const chainName = client.getChainName(chain?.id);
+  const chainId = chain?.id;
 
   const { data: ensName } = useEnsName({ address });
 
@@ -39,7 +39,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client }) => {
     let active = true;
 
     async function loadBalance() {
-      const result = await client.getWalletBalance({ chainName, address });
+      const result = await client.getWalletBalance({ chainId, address });
       if (active) {
         !result ? setIsError(true) : setWalletBalances(result);
         setIsLoading(false);
@@ -53,7 +53,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client }) => {
       setIsError(false);
       setIsLoading(false);
     };
-  }, [client, address, chainName]);
+  }, [client, address, chainId]);
 
   const shortenedAddress = useMemo(() => {
     if (!address) return "";
@@ -85,7 +85,12 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client }) => {
             return (
               <Group key={key} position="apart">
                 <Group spacing="md">
-                  <Avatar size="md" radius="xl" src={item.logo_url} color="dark">
+                  <Avatar
+                    size="md"
+                    radius="xl"
+                    src={item.logo_url}
+                    color="dark"
+                  >
                     {item?.contract_ticker_symbol}
                   </Avatar>
 

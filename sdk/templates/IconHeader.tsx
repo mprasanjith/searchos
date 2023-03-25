@@ -1,9 +1,9 @@
 import { Text, Avatar, Flex } from "@/sdk";
 
 interface IconHeaderProps {
-  title?: string;
-  subtitle?: string;
-  imageUrl?: string;
+  title?: string | null;
+  subtitle?: string | null;
+  imageUrl?: string | null;
 }
 
 const IconHeader: React.FC<IconHeaderProps> = ({

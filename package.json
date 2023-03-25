@@ -12,6 +12,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/server": "^11.10.0",
     "@ensdomains/ens-avatar": "^0.2.1",
+    "@lens-protocol/client": "^0.3.0",
     "@lifi/widget": "^1.32.8",
     "@mantine/core": "^6.0.2",
     "@mantine/form": "^6.0.4",
