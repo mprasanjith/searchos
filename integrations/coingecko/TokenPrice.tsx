@@ -31,7 +31,7 @@ const useStyles = createStyles(() => ({
 const TokenPrice: React.FC<TokenPriceProps> = ({ client, token }) => {
   const { data: tokenData, isLoading } = useSWR(
     `coingecko:get-price:${token.symbol}`,
-    () => (token?.symbol ? client.getTokenData(token.symbol) : null)
+    () => (token?.id ? client.getTokenData(token.id) : null)
   );
 
   const { classes } = useStyles();
