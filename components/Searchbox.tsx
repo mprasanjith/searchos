@@ -1,6 +1,6 @@
 import { Button, Flex, useMantineTheme } from "@mantine/core";
 import { useMemo } from "react";
-import { Search, Searcher, Theme, Option } from "searchpal";
+import { Search, Searcher, Theme, Option } from "@/components/searchpal/lib";
 import Media from "@/components/Media";
 import { Command, Extension } from "@/sdk";
 import Preview from "./Preview";
