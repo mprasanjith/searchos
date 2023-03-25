@@ -3,7 +3,6 @@ import { CovalentClient } from "./client";
 import icon from "./icon.png";
 import WalletBalance from "./WalletBalance";
 import { isAddress } from "ethers/lib/utils.js";
-import { match } from "./keywords"
 export class CovalentExtension extends Extension {
   private client: CovalentClient = new CovalentClient();
 
@@ -19,13 +18,34 @@ export class CovalentExtension extends Extension {
       name: "get-wallet-balance",
       title: `Get wallet balance`,
       description: "Get wallet balance via Covalent",
-      shouldHandle: (query: string) => {
-        const ownWallet = match(query);
-        return query.includes(".eth") || isAddress(query) || ownWallet;
+      assistant: {
+        description: "Get wallet balance",
+        params: ["walletAddress"],
       },
-      handler: ({ query }) => {
-        const normalizedQuery = query.trim().toLowerCase() as `0x${string}`;
-        return <WalletBalance client={this.client} query={normalizedQuery} />;
+      shouldHandle: (query: string) => {
+        return (
+          !query.includes(" ") &&
+          (query.trim().endsWith(".eth") || isAddress(query.trim()))
+        );
+      },
+      handler: ({ query, assistantQuery }) => {
+        const normalizedQuery = query.trim().toLowerCase();
+        const assistantNormalizedQuery = assistantQuery?.["walletAddress"]
+          ?.trim()
+          .toLowerCase();
+
+        let address: `0x${string}` | string | null = null;
+        if (
+          assistantNormalizedQuery &&
+          (isAddress(assistantNormalizedQuery) ||
+            assistantNormalizedQuery.endsWith(".eth"))
+        ) {
+          address = assistantNormalizedQuery;
+        } else {
+          address = normalizedQuery;
+        }
+
+        return <WalletBalance client={this.client} addressOrEns={address} />;
       },
     },
   ];

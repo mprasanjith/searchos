@@ -2,6 +2,7 @@ import { StaticImageData } from "next/image";
 
 export interface CommandHandlerProps {
   query: string;
+  assistantQuery?: Record<string, string>;
 }
 
 type ParsedQueryFn = (query: string) => string;
@@ -10,6 +11,10 @@ export interface Command {
   name: string;
   title: string | ParsedQueryFn;
   description: string | ParsedQueryFn;
+  assistant: {
+    description: string;
+    params: string[];
+  };
   url?: string | ParsedQueryFn;
   cta?: string | ParsedQueryFn;
   shouldHandle: (query: string) => boolean;

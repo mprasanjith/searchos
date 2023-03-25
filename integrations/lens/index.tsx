@@ -4,10 +4,9 @@ import icon from "./icon.png";
 import LensClient, { polygon } from "@lens-protocol/client";
 
 export class LensExtension extends Extension {
-
-private client: LensClient = new LensClient({
-    environment: polygon
-});
+  private client: LensClient = new LensClient({
+    environment: polygon,
+  });
 
   name = "lens";
   title = "Lens";
@@ -20,13 +19,19 @@ private client: LensClient = new LensClient({
       name: "get-lens-profile",
       title: "Get Lens profile",
       description: "Get Lens Profile with the Lens SDK",
+      assistant: {
+        description: "Get Lens Protocol Profile",
+        params: ["lensHandle"],
+      },
       shouldHandle: (query: string) => {
         return query.trim().toLowerCase().includes(".lens");
       },
       url: (query: string) => {
-        return`https://lenster.xyz/u/${query.replace(".lens", "")}`
+        return `https://lenster.xyz/u/${query.replace(".lens", "")}`;
       },
-      handler: ({ query }) => <LensProfile query={query} client={this.client}/>,
+      handler: ({ query }) => (
+        <LensProfile query={query} client={this.client} />
+      ),
     },
   ];
 

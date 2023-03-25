@@ -14,6 +14,10 @@ export class ERC20TransferExtension extends Extension {
       name: "transfer-erc20",
       title: "Send tokens",
       description: "Transfer ERC20 tokens",
+      assistant: {
+        description: "Send tokens",
+        params: ["token", "sendAmount", "receiverAddress"],
+      },
       shouldHandle: (query: string) => {
         const matchedKeyword = ["send", "transfer"].find((keyword) =>
           query.trim().toLowerCase().includes(keyword)

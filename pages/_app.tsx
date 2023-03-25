@@ -2,6 +2,7 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { Box, ColorScheme, MantineProvider } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
+import "../styles/global.css";
 import {
   darkTheme,
   RainbowKitProvider,
@@ -13,6 +14,7 @@ import "@rainbow-me/rainbowkit/wallets";
 import { WagmiConfig, createClient, configureChains, mainnet } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import ExtensionsProvider from "@/components/ExtensionsProvider";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet],
@@ -73,14 +75,16 @@ export default function App(props: AppProps) {
             theme={{
               colorScheme,
               headings: { fontFamily: RoundedFont },
-              fontFamily: RoundedFont,
+              fontFamily: `SFRounded, ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
             }}
             withGlobalStyles
             withNormalizeCSS
           >
-            <Box bg={colorScheme == "light" ? "gray.1" : "dark.6"} h="100vh">
-              <Component {...pageProps} />
-            </Box>
+            <ExtensionsProvider>
+              <Box bg={colorScheme == "light" ? "gray.1" : "dark.6"} h="100vh">
+                <Component {...pageProps} />
+              </Box>
+            </ExtensionsProvider>
           </MantineProvider>
         </RainbowKitProvider>
       </WagmiConfig>
