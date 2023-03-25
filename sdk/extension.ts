@@ -10,7 +10,10 @@ export interface Command {
   name: string;
   title: string | ParsedQueryFn;
   description: string | ParsedQueryFn;
-  params: string[];
+  assistant: {
+    description: string;
+    params: string[];
+  };
   url?: string | ParsedQueryFn;
   cta?: string | ParsedQueryFn;
   shouldHandle: (query: string) => boolean;

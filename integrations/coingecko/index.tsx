@@ -54,7 +54,10 @@ export class CoinGeckoExtension extends Extension {
       name: "get-price",
       title: (query) => `Get ${query?.toUpperCase()} token price`,
       description: "Get token prices via CoinGecko",
-      params: ["tokenSymbol"],
+      assistant: {
+        description: "Get token price",
+        params: ["tokenSymbol"],
+      },
       url: (query) => {
         const token = this.client.findTokenMatch(query);
         return (

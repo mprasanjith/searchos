@@ -1,11 +1,4 @@
-import {
-  CoinGeckoExtension,
-  CoinGeckoTokenDataResult,
-} from "@/integrations/coingecko";
-import { CovalentExtension } from "@/integrations/covalent";
-import { ERC20TransferExtension } from "@/integrations/erc20transfer";
-import { EthGasStationExtension } from "@/integrations/ethgasstation";
-import { LiFiExtension } from "@/integrations/lifi";
+import { getExtensionsForGPT } from "@/utils/extensions";
 import { buildSystemMessage, getChatCompletion } from "@/utils/server/openai";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -13,13 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-  const systemMessage = buildSystemMessage([
-    new ERC20TransferExtension(),
-    new LiFiExtension(),
-    new CoinGeckoExtension(),
-    new EthGasStationExtension(),
-    new CovalentExtension(),
-  ]);
+  const systemMessage = buildSystemMessage(getExtensionsForGPT());
   const completion = await getChatCompletion(
     systemMessage,
     req.query.query as string

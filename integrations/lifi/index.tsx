@@ -49,7 +49,10 @@ export class LiFiExtension extends Extension {
       name: "swap-tokens",
       title: `Swap tokens`,
       description: "Swap tokens via LI.FI aggregator",
-      params: ["inToken", "outToken", "sendAmount", "receiveAmount"],
+      assistant: {
+        description: "Swap tokens",
+        params: ["inToken", "outToken", "sendAmount", "receiveAmount"],
+      },
       shouldHandle: (query: string) => {
         const wordsToHandle = ["swap", "tokens", "exchange", "erc20", "dex"];
         return wordsToHandle.some((word) => query.includes(word));
@@ -57,15 +60,31 @@ export class LiFiExtension extends Extension {
       handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
     },
     {
-        name: "bridge-tokens",
-        title: `Bridge tokens`,
-        description: "Bridge tokens via LI.FI aggregator",
-        params: ["inToken", "outToken", "sendAmount", "receiveAmount", "fromChain", "toChain"],
-        shouldHandle: (query: string) => {
-          const wordsToHandle = ["bridge", "tokens", "erc20", "crosschain", "cross-chain"];
-          return wordsToHandle.some((word) => query.includes(word));
-        },
-        handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
+      name: "bridge-tokens",
+      title: `Bridge tokens`,
+      description: "Bridge tokens via LI.FI aggregator",
+      assistant: {
+        description: "Swap tokens",
+        params: [
+          "inToken",
+          "outToken",
+          "sendAmount",
+          "receiveAmount",
+          "fromChain",
+          "toChain",
+        ],
       },
+      shouldHandle: (query: string) => {
+        const wordsToHandle = [
+          "bridge",
+          "tokens",
+          "erc20",
+          "crosschain",
+          "cross-chain",
+        ];
+        return wordsToHandle.some((word) => query.includes(word));
+      },
+      handler: ({}) => <LiFiWidgetDynamic config={widgetConfig} />,
+    },
   ];
 }
