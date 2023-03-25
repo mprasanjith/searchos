@@ -19,7 +19,7 @@ const Searchbox: React.FC = () => {
   const theme = useMemo(() => {
     const theme = new Theme({
       light: {
-        shadow: mantineTheme.shadows.xs,
+        shadow: mantineTheme.shadows.xl,
         accent: mantineTheme.primaryColor,
         accentText: mantineTheme.white,
         background: mantineTheme.white,

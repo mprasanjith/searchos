@@ -37,6 +37,8 @@ const client = createClient({
   connectors,
 });
 
+const RoundedFont = `SFRounded, ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`;
+
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
 
@@ -72,6 +74,7 @@ export default function App(props: AppProps) {
           <MantineProvider
             theme={{
               colorScheme,
+              headings: { fontFamily: RoundedFont },
               fontFamily: `SFRounded, ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
             }}
             withGlobalStyles
