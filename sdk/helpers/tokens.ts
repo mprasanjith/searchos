@@ -46,11 +46,24 @@ export class TokenListClient {
     if (!symbol) return null;
 
     let sanitizedSymbol = symbol.trim().toLowerCase();
-    if (sanitizedSymbol === "eth") sanitizedSymbol = "weth";
 
-    return this.getTokenList(chainId).find(
+    let token = this.getTokenList(chainId).find(
       (token) => token.symbol?.trim()?.toLowerCase() === sanitizedSymbol
     );
+
+    if (!token) {
+      if (sanitizedSymbol === "eth") {
+        sanitizedSymbol = "weth";
+      } else if (sanitizedSymbol === "weth") {
+        sanitizedSymbol = "eth";
+      }
+
+      token = this.getTokenList(chainId).find(
+        (token) => token.symbol?.trim()?.toLowerCase() === sanitizedSymbol
+      );
+    }
+
+    return token;
   }
 
   async fetchTokenList(chainId: number) {
