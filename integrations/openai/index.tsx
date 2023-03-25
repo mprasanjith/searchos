@@ -25,7 +25,7 @@ export class OpenAIExtension extends Extension {
         if (query.length < 8 || query.split(" ").length < 2) return false;
         return true;
       },
-      handler: ({ query }) => <ChatGPT client={this.client} query={query} />,
+      handler: ({ query, chainId }) => <ChatGPT client={this.client} query={query} chainId={chainId} />,
     },
   ];
 }

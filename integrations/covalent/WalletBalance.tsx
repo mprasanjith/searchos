@@ -9,6 +9,9 @@ import {
   ethers,
   useEnsAddress,
   useAccount,
+  useNetwork,
+  Alert,
+  IconAlertCircle,
 } from "@/sdk";
 import useSWR from "swr";
 import { useMemo } from "react";
@@ -24,20 +27,20 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   client,
   addressOrEns,
 }) => {
+  const { chain } = useNetwork();
   const { address: userAddress } = useAccount();
-
   const addressToUse = addressOrEns || userAddress;
-
-  console.log({ addressToUse })
 
   const { data: address } = useEnsAddress({
     name: addressToUse,
     enabled: addressToUse?.endsWith(".eth"),
+    chainId: 1,
   });
 
   const { data: ensName } = useEnsName({
     address: addressToUse as `0x${string}`,
     enabled: addressToUse?.startsWith("0x"),
+    chainId: 1,
   });
 
   const resolvedEnsName = useMemo(
@@ -56,19 +59,33 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
     data: walletBalances,
     isLoading,
     error,
-  } = useSWR(`covalent:get-wallet-balance:${resolvedAddress}`, async () =>
-    resolvedAddress
-      ? await client.getWalletBalance({
-          chainId: 1,
-          address: resolvedAddress,
-        })
-      : null
+  } = useSWR(
+    `covalent:get-wallet-balance:${chain?.id || 1}:${resolvedAddress}`,
+    async () =>
+      resolvedAddress
+        ? await client.getWalletBalance({
+            chainId: chain?.id || 1,
+            address: resolvedAddress,
+          })
+        : null
   );
 
   const shortenedAddress = useMemo(() => {
     if (!resolvedAddress) return "";
     return `${resolvedAddress.slice(0, 6)}...${resolvedAddress.slice(-4)}`;
   }, [resolvedAddress]);
+
+  if (chain?.id === 100) {
+    return (
+      <Alert
+        icon={<IconAlertCircle size="1rem" />}
+        title="Unsupported"
+        color="red"
+      >
+        Covalent does not support Gnosis Chain at the moment.
+      </Alert>
+    );
+  }
 
   return (
     <Detail isPending={isLoading} isError={error}>

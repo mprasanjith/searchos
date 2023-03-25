@@ -16,7 +16,7 @@ interface ChatGPTProps extends CommandHandlerProps {
   client: ChatGPTClient;
 }
 
-const ChatGPT: React.FC<ChatGPTProps> = ({ query, client }) => {
+const ChatGPT: React.FC<ChatGPTProps> = ({ query, client, chainId }) => {
   const { getMatchingCommand, getMatchingExtension } =
     useContext(ExtensionsContext);
 
@@ -53,7 +53,13 @@ const ChatGPT: React.FC<ChatGPTProps> = ({ query, client }) => {
           </Center>
         )}
 
-        {Component && <Component query={query} assistantQuery={data?.query} />}
+        {Component && (
+          <Component
+            query={query}
+            assistantQuery={data?.query}
+            chainId={chainId}
+          />
+        )}
       </Box>
     </Detail>
   );

@@ -1,4 +1,4 @@
-import { Command, Extension } from "@/sdk";
+import { Command, Extension, useNetwork } from "@/sdk";
 import { Flex } from "@mantine/core";
 
 interface Action {
@@ -12,8 +12,10 @@ interface PreviewProps {
 }
 
 const Preview: React.FC<PreviewProps> = ({ action, query }) => {
+  const { chain } = useNetwork();
+
   const Component = action.command.handler;
-  return <Component query={query} />;
+  return <Component query={query} chainId={chain?.id || 1} />;
 };
 
 export default Preview;

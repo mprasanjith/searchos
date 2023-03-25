@@ -38,7 +38,7 @@ export class ERC20TransferExtension extends Extension {
         );
         return !!matchedKeyword;
       },
-      handler: ({ assistantQuery }) => {
+      handler: ({ assistantQuery, chainId }) => {
         const params: ERC20TransferParams = {
           token: null,
           sendAmount: null,
@@ -46,7 +46,10 @@ export class ERC20TransferExtension extends Extension {
         };
         if (assistantQuery) {
           const tokenSymbol = assistantQuery["token"];
-          const token = this.tokenListClient.findTokenBySymbol(tokenSymbol);
+          const token = this.tokenListClient.findTokenBySymbol(
+            tokenSymbol,
+            chainId
+          );
           if (token) params.token = token.symbol;
 
           const amount = assistantQuery["sendAmount"];
@@ -59,7 +62,7 @@ export class ERC20TransferExtension extends Extension {
 
         return (
           <ERC20Transfer
-            tokenList={this.tokenListClient.getTokenList()}
+            tokenList={this.tokenListClient.getTokenList(chainId)}
             params={params}
           />
         );

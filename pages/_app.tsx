@@ -3,21 +3,36 @@ import Head from "next/head";
 import { Box, ColorScheme, MantineProvider } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
 import {
-  darkTheme,
   RainbowKitProvider,
   getDefaultWallets,
   lightTheme,
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import "@rainbow-me/rainbowkit/wallets";
-import { WagmiConfig, createClient, configureChains, mainnet } from "wagmi";
+import {
+  WagmiConfig,
+  createClient,
+  configureChains,
+  mainnet,
+  Chain,
+} from "wagmi";
+import { gnosis, polygon } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import ExtensionsProvider from "@/components/ExtensionsProvider";
 import "../styles/global.css";
 
+const defaultChains: any[] = [
+  mainnet,
+  polygon,
+  {
+    ...gnosis,
+    iconUrl: "/gno.jpeg",
+  },
+];
+
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet],
+  defaultChains,
   process.env.NEXT_PUBLIC_ALCHEMY_ID
     ? [
         alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID }),
@@ -59,16 +74,9 @@ export default function App(props: AppProps) {
       <WagmiConfig client={client}>
         <RainbowKitProvider
           chains={chains}
-          theme={
-            // colorScheme === "dark"
-            //   ? darkTheme({
-            //       accentColor: "black",
-            //     })
-            //   :
-            lightTheme({
-              accentColor: "black",
-            })
-          }
+          theme={lightTheme({
+            accentColor: "black",
+          })}
           coolMode={true}
         >
           <MantineProvider

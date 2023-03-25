@@ -3,6 +3,7 @@ import { StaticImageData } from "next/image";
 export interface CommandHandlerProps {
   query: string;
   assistantQuery?: Record<string, string>;
+  chainId: number;
 }
 
 type ParsedQueryFn = (query: string) => string;

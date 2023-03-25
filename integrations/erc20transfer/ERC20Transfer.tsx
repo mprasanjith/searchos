@@ -1,6 +1,5 @@
 import {
   Box,
-  CommandHandlerProps,
   Detail,
   Autocomplete,
   TextInput,
@@ -11,7 +10,6 @@ import {
   Text,
   Avatar,
   Group,
-  HTTP,
   ethers,
   useEnsAddress,
   usePrepareContractWrite,
@@ -22,11 +20,9 @@ import {
   IconAlertCircle,
   useAccount,
   useEnsName,
-  useEnsAvatar,
 } from "@/sdk";
 import TextHeader from "@/sdk/templates/TextHeader";
-import { forwardRef, useEffect, useMemo } from "react";
-import useSWR from "swr";
+import { forwardRef, useMemo } from "react";
 import { ERC20TransferParams } from ".";
 import { TokenListToken } from "@/sdk/helpers/tokens";
 
@@ -52,8 +48,6 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
 );
 
 SelectItem.displayName = "AutoCompleteItem";
-
-const http = new HTTP();
 
 interface ERC20TransferProps {
   params: ERC20TransferParams;
@@ -102,6 +96,7 @@ const ERC20Transfer: React.FC<ERC20TransferProps> = ({
   const { data: resolvedAddress } = useEnsAddress({
     name: form.values.address,
     enabled: form.values.address.endsWith(".eth"),
+    chainId: 1,
   });
 
   const token = useMemo(() => {
@@ -109,7 +104,7 @@ const ERC20Transfer: React.FC<ERC20TransferProps> = ({
   }, [tokens, form.values.token]);
 
   const { address } = useAccount();
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: 1 });
   const { data: tokenBalance } = useBalance({
     enabled: !!token,
     token: token?.address as `0x${string}`,
@@ -205,7 +200,9 @@ const ERC20Transfer: React.FC<ERC20TransferProps> = ({
               label="Amount"
               placeholder="Enter amount"
               description={
-                tokenBalance ? `Balance: ${tokenBalance.formatted}` : ""
+                form.values.token && tokenBalance
+                  ? `Balance: ${tokenBalance.formatted}`
+                  : ""
               }
               {...form.getInputProps("amount")}
             />
