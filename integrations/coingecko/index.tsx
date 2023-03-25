@@ -59,7 +59,7 @@ export class CoinGeckoExtension extends Extension {
         params: ["tokenSymbol"],
       },
       url: (query) => {
-        const token = this.client.findTokenMatch(query);
+        const token = this.client.findTokenMatch(query.trim());
         return `https://www.coingecko.com/en/coins/${token?.id}`;
       },
       shouldHandle: (query: string) => !!this.client.findTokenMatch(query),

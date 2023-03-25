@@ -1,97 +1,81 @@
 import {
   Avatar,
   Box,
-  CommandHandlerProps,
   Detail,
   Group,
   Stack,
   Text,
-  useAccount,
   useEnsName,
-  useNetwork,
   ethers,
+  useEnsAddress,
 } from "@/sdk";
-import { useEffect, useMemo, useState, useRef } from "react";
-import { CovalentClient, CovalentWalletBalanceResult } from "./client";
+import useSWR from "swr";
+import { useMemo } from "react";
+import { CovalentClient } from "./client";
 import IconHeader from "@/sdk/templates/IconHeader";
-import { match } from "./keywords";
 
-interface WalletBalanceProps extends CommandHandlerProps {
+interface WalletBalanceProps {
   client: CovalentClient;
-  query: `0x${string}`;
+  addressOrEns: `0x${string}` | string;
 }
 
-const WalletBalance: React.FC<WalletBalanceProps> = ({ client, query }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [walletBalances, setWalletBalances] = useState<
-    CovalentWalletBalanceResult[]
-  >([]);
-  const queryRef = useRef<any>(query);
-  const { address } = useAccount();
-  const { chain } = useNetwork();
-  const chainId = chain?.id;
-  const { data: ensName } = useEnsName({
-    address: queryRef.current,
-    enabled: queryRef.current.startsWith("0x"),
+const WalletBalance: React.FC<WalletBalanceProps> = ({
+  client,
+  addressOrEns,
+}) => {
+  const { data: address } = useEnsAddress({
+    name: addressOrEns,
+    enabled: addressOrEns.endsWith(".eth"),
   });
 
-  useEffect(() => {
-    setIsLoading(true);
-    setIsError(false);
+  const { data: ensName } = useEnsName({
+    address: addressOrEns as `0x${string}`,
+    enabled: addressOrEns.startsWith("0x"),
+  });
 
-    let active = true;
+  const resolvedEnsName = useMemo(
+    () => (addressOrEns.endsWith(`.eth`) ? addressOrEns : ensName),
+    [addressOrEns, ensName]
+  );
+  const resolvedAddress = useMemo(
+    () =>
+      addressOrEns.startsWith(`0x`) ? (addressOrEns as `0x${string}`) : address,
+    [addressOrEns, address]
+  );
 
-    function replaceQuery() {
-      queryRef.current = ensName || address;
-    }
-
-    async function loadBalance() {
-      if (match(query)) {
-        replaceQuery();
-      }
-      const result = await client.getWalletBalance({
-        chainId,
-        address: queryRef.current,
-      });
-
-      if (active) {
-        !result ? setIsError(true) : setWalletBalances(result);
-        setIsLoading(false);
-      }
-    }
-
-    loadBalance();
-
-    return () => {
-      active = false;
-      setIsError(false);
-      setIsLoading(false);
-    };
-  }, [client, query, chainId, address]);
+  const {
+    data: walletBalances,
+    isLoading,
+    error,
+  } = useSWR(`covalent:get-wallet-balance:${resolvedAddress}`, async () =>
+    resolvedAddress
+      ? await client.getWalletBalance({
+          chainId: 1,
+          address: resolvedAddress,
+        })
+      : null
+  );
 
   const shortenedAddress = useMemo(() => {
-    if (!query) return "";
-    if (queryRef.current.startsWith("0x") || match(query)) {
-      return `${queryRef.current.slice(0, 6)}...${queryRef.current.slice(-4)}`;
-    }
-  }, [queryRef.current]);
+    if (!resolvedAddress) return "";
+    return `${resolvedAddress.slice(0, 6)}...${resolvedAddress.slice(-4)}`;
+  }, [resolvedAddress]);
 
   return (
-    <Detail isPending={isLoading} isError={isError}>
+    <Detail isPending={isLoading} isError={error}>
       <Stack spacing="lg" m="md">
         <IconHeader
-          title={ensName || shortenedAddress || query}
+          title={resolvedEnsName || shortenedAddress}
           subtitle="Ethereum"
           imageUrl={
-            ensName
-              ? `https://metadata.ens.domains/mainnet/avatar/${ensName}`
+            resolvedEnsName
+              ? `https://metadata.ens.domains/mainnet/avatar/${resolvedEnsName}`
               : undefined
           }
         />
 
         {walletBalances
-          .filter((token) => !!token.contract_name)
+          ?.filter((token) => !!token.contract_name)
           .map((item, key) => {
             const tokenAmount = Number.parseFloat(
               ethers.utils.formatUnits(item.balance, item.contract_decimals)
