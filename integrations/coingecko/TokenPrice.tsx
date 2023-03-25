@@ -1,6 +1,5 @@
 import {
   Box,
-  CommandHandlerProps,
   createStyles,
   Detail,
   IconArrowDownRight,
@@ -8,14 +7,15 @@ import {
   millify,
   Text,
 } from "@/sdk";
-import { useEffect, useState } from "react";
-import { CoinGeckoTokenDataResult, CoinGeckoTokenResult } from ".";
+import useSWR from "swr";
 import { CoinGeckoClient } from "./client";
 import IconHeader from "@/sdk/templates/IconHeader";
 import DetailsGrid from "@/sdk/templates/DetailsGrid";
+import { CoinGeckoTokenResult } from ".";
 
-interface TokenPriceProps extends CommandHandlerProps {
+interface TokenPriceProps {
   client: CoinGeckoClient;
+  token: CoinGeckoTokenResult;
 }
 
 const useStyles = createStyles(() => ({
@@ -28,44 +28,13 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-const TokenPrice: React.FC<TokenPriceProps> = ({ client, query }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [token, setToken] = useState<CoinGeckoTokenResult | null>(null);
-  const [tokenData, setTokenData] = useState<CoinGeckoTokenDataResult | null>(
-    null
+const TokenPrice: React.FC<TokenPriceProps> = ({ client, token }) => {
+  const { data: tokenData, isLoading } = useSWR(
+    `coingecko:get-price:${token.symbol}`,
+    () => (token?.symbol ? client.getTokenData(token.symbol) : null)
   );
 
   const { classes } = useStyles();
-
-  useEffect(() => {
-    if (!query) return;
-
-    setIsLoading(true);
-    setToken(null);
-    setTokenData(null);
-
-    let active = true;
-
-    async function loadQuote() {
-      const match = client.findTokenMatch(query);
-      if (!match) return;
-
-      const tokenData = await client.getTokenData(match.id);
-
-      if (active) {
-        setToken(match);
-        setTokenData(tokenData);
-        setIsLoading(false);
-      }
-    }
-
-    loadQuote();
-
-    return () => {
-      active = false;
-      setIsLoading(false);
-    };
-  }, [query, client]);
 
   const isGain = (tokenData?.market_data?.price_change_percentage_24h || 0) > 0;
   const DiffIcon = isGain ? IconArrowUpRight : IconArrowDownRight;

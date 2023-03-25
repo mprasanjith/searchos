@@ -8,14 +8,18 @@ import {
 } from "@/sdk";
 import { ChatGPTClient } from "./client";
 import useSWR from "swr";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import useDebounce from "./useDebounce";
+import { ExtensionsContext } from "@/components/ExtensionsProvider";
 
 interface ChatGPTProps extends CommandHandlerProps {
   client: ChatGPTClient;
 }
 
 const ChatGPT: React.FC<ChatGPTProps> = ({ query, client }) => {
+  const { extensions, getMatchingCommand, getMatchingExtension } =
+    useContext(ExtensionsContext);
+
   const debouncedSearch = useDebounce(query, 1000);
   const { data, isLoading, error, isValidating } = useSWR(
     () => (debouncedSearch ? `/api/completion?query=${debouncedSearch}` : null),
@@ -23,30 +27,18 @@ const ChatGPT: React.FC<ChatGPTProps> = ({ query, client }) => {
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      // revalidateIfStale: false,get
-      // revalidateOnMount: false,
     }
   );
 
   const matchingExtension = useMemo(() => {
-    if (!data) return null;
-    return client.getMatchingExtension(data);
-  }, [data, client]);
+    if (!data?.extension) return null;
+    return getMatchingExtension(data.extension);
+  }, [data, getMatchingExtension]);
 
   const matchingCommand = useMemo(() => {
-    if (!data || !matchingExtension) return null;
-    return client.getMatchingCommand(data, matchingExtension);
-  }, [data, client, matchingExtension]);
-
-  console.log({
-    query,
-    data,
-    isLoading,
-    error,
-    matchingExtension,
-    matchingCommand,
-    isValidating,
-  });
+    if (!data?.command || !matchingExtension) return null;
+    return getMatchingCommand(matchingExtension, data.command);
+  }, [data, matchingExtension, getMatchingCommand]);
 
   const Component = matchingCommand?.handler;
 
@@ -61,7 +53,7 @@ const ChatGPT: React.FC<ChatGPTProps> = ({ query, client }) => {
           </Center>
         )}
 
-        {Component && <Component query={query} />}
+        {Component && <Component query={query} assistantQuery={data?.query} />}
       </Box>
     </Detail>
   );

@@ -60,13 +60,17 @@ export class CoinGeckoExtension extends Extension {
       },
       url: (query) => {
         const token = this.client.findTokenMatch(query);
-        return (
-          `https://www.coingecko.com/en/coins/${token?.id}` ||
-          "https://www.coingecko.com/"
-        );
+        return `https://www.coingecko.com/en/coins/${token?.id}`;
       },
       shouldHandle: (query: string) => !!this.client.findTokenMatch(query),
-      handler: ({ query }) => <TokenPrice client={this.client} query={query} />,
+      handler: ({ query, assistantQuery }) => {
+        const params = assistantQuery?.["tokenSymbol"] || query;
+
+        const token = this.client.findTokenMatch(params);
+        if (!token) return null;
+
+        return <TokenPrice client={this.client} token={token} />;
+      },
     },
   ];
 

@@ -16,7 +16,7 @@ const LensProfile: React.FC<LensProfileProps> = ({ client, query }) => {
     data: profile,
     isLoading,
     error,
-  } = useSWR(`lens/profile/${query}`, async () => {
+  } = useSWR(`lens:get-lens-profile:${query}`, async () => {
     return client.profile.fetch({ handle: query });
   });
 

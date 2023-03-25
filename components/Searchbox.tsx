@@ -1,20 +1,19 @@
 import { Button, Flex, useMantineTheme } from "@mantine/core";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { Search, Searcher, Theme, Option } from "@/components/searchpal/lib";
 import Media from "@/components/Media";
 import { Command, Extension } from "@/sdk";
 import Preview from "./Preview";
-
-interface SearchboxProps {
-  extensions: Extension[];
-}
+import { ExtensionsContext } from "./ExtensionsProvider";
 
 interface Action {
   extension: Extension;
   command: Command;
 }
 
-const Searchbox: React.FC<SearchboxProps> = ({ extensions }) => {
+const Searchbox: React.FC = () => {
+  const { extensions } = useContext(ExtensionsContext);
+
   const mantineTheme = useMantineTheme();
 
   const theme = useMemo(() => {
