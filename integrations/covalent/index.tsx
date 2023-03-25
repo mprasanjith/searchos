@@ -2,7 +2,8 @@ import { Command, Extension } from "@/sdk";
 import { CovalentClient } from "./client";
 import icon from "./icon.png";
 import WalletBalance from "./WalletBalance";
-
+import { isAddress } from "ethers/lib/utils.js";
+import { match } from "./keywords"
 export class CovalentExtension extends Extension {
   private client: CovalentClient = new CovalentClient();
 
@@ -23,12 +24,13 @@ export class CovalentExtension extends Extension {
         params: ["walletAddress"],
       },
       shouldHandle: (query: string) => {
-        const wordsToHandle = ["wallet", "balance"];
-        return wordsToHandle.some((word) => query.includes(word));
+        const ownWallet = match(query);
+        return query.includes(".eth") || isAddress(query) || ownWallet;
       },
-      handler: ({ query }) => (
-        <WalletBalance client={this.client} query={query} />
-      ),
+      handler: ({ query }) => {
+        const normalizedQuery = query.trim().toLowerCase() as `0x${string}`;
+        return <WalletBalance client={this.client} query={normalizedQuery} />;
+      },
     },
   ];
 
