@@ -11,26 +11,30 @@ import {
   useNetwork,
   ethers,
 } from "@/sdk";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { CovalentClient, CovalentWalletBalanceResult } from "./client";
 import IconHeader from "@/sdk/templates/IconHeader";
+import { match } from "./keywords";
 
 interface WalletBalanceProps extends CommandHandlerProps {
   client: CovalentClient;
+  query: `0x${string}`;
 }
 
-const WalletBalance: React.FC<WalletBalanceProps> = ({ client }) => {
+const WalletBalance: React.FC<WalletBalanceProps> = ({ client, query }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [walletBalances, setWalletBalances] = useState<
     CovalentWalletBalanceResult[]
   >([]);
-
+  const queryRef = useRef(query);
   const { address } = useAccount();
   const { chain } = useNetwork();
   const chainId = chain?.id;
-
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({
+    address: queryRef.current,
+    enabled: queryRef.current.startsWith("0x"),
+  });
 
   useEffect(() => {
     setIsLoading(true);
@@ -38,8 +42,18 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client }) => {
 
     let active = true;
 
+    function replaceQuery() {
+      if (address) {
+        queryRef.current = address;
+      }
+    }
+
     async function loadBalance() {
-      const result = await client.getWalletBalance({ chainId, address });
+      if (match(query)) {
+        replaceQuery();
+      }
+      const result = await client.getWalletBalance({ chainId, address: queryRef.current });
+
       if (active) {
         !result ? setIsError(true) : setWalletBalances(result);
         setIsLoading(false);
@@ -53,18 +67,20 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ client }) => {
       setIsError(false);
       setIsLoading(false);
     };
-  }, [client, address, chainId]);
+  }, [client, query, chainId, address]);
 
   const shortenedAddress = useMemo(() => {
-    if (!address) return "";
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  }, [address]);
+    if (!query) return "";
+    if (queryRef.current.startsWith("0x") || match(queryRef.current)) {
+      return `${queryRef.current.slice(0, 6)}...${queryRef.current.slice(-4)}`;
+    }
+  }, [query]);
 
   return (
     <Detail isPending={isLoading} isError={isError}>
       <Stack spacing="lg" m="md">
         <IconHeader
-          title={ensName || shortenedAddress}
+          title={ensName || shortenedAddress || query}
           subtitle="Ethereum"
           imageUrl={
             ensName
