@@ -34,8 +34,6 @@ export class TokenListClient {
       100: tokensGC,
       137: tokensPolygon,
     };
-
-    console.log("TokenListClient initialized", this.tokenlists);
   }
 
   getTokenList(chainId: number) {

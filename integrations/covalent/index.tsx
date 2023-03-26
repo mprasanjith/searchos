@@ -3,6 +3,7 @@ import { CovalentClient } from "./client";
 import icon from "./icon.jpg";
 import WalletBalance from "./WalletBalance";
 import { isAddress } from "ethers/lib/utils.js";
+import { sanitizeAddress, sanitizeENS } from "@/sdk/helpers/sanitizers";
 export class CovalentExtension extends Extension {
   private client: CovalentClient = new CovalentClient();
 
@@ -16,7 +17,21 @@ export class CovalentExtension extends Extension {
   commands: Command[] = [
     {
       name: "get-wallet-balance",
-      title: `Get wallet balance`,
+      title: (query) => {
+        if (["balance", "wallet"].some((keyword) => query === keyword)) {
+          return `Explore your wallet`;
+        }
+
+        const address = sanitizeAddress(query);
+        if (address) {
+          return `Explore ${address.slice(0, 6)}...${address.slice(-4)}`;
+        }
+
+        const ens = sanitizeENS(query);
+        if (ens) return `Explore ${ens}`;
+
+        return `Explore wallet`;
+      },
       description: "Get wallet balance via Covalent",
       assistant: {
         description: "Get wallet balance",
@@ -38,7 +53,6 @@ export class CovalentExtension extends Extension {
         const ownBalance = ["balance", "wallet"].some(
           (keyword) => normalizedQuery === keyword
         );
-
 
         let address: `0x${string}` | string | null = null;
         if (!ownBalance) {

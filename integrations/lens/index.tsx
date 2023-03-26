@@ -18,8 +18,11 @@ export class LensExtension extends Extension {
   commands: Command[] = [
     {
       name: "get-lens-profile",
-      title: "Get Lens profile",
-      description: "Get Lens Profile via the Lens Protocol",
+      title: (query) => {
+        const handle = sanitizeENS(query, ".lens");
+        return `See ${handle}`;
+      },
+      description: "Find and follow frens via Lens Protocol",
       assistant: {
         description: "Get Lens Protocol Profile",
         params: ["lensHandle"],
@@ -34,10 +37,7 @@ export class LensExtension extends Extension {
       handler: ({ query, assistantQuery }) => {
         let handle = assistantQuery?.["lensHandle"] || query;
 
-        const handleNormalized = sanitizeENS(
-          handle.trim().toLowerCase(),
-          ".lens"
-        );
+        const handleNormalized = sanitizeENS(handle, ".lens");
 
         if (!handleNormalized) return null;
 

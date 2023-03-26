@@ -26,8 +26,8 @@ export class ERC20TransferExtension extends Extension {
   commands: Command[] = [
     {
       name: "transfer-erc20",
-      title: "Send tokens",
-      description: "Transfer ERC20 tokens",
+      title: "Send",
+      description: "Transfer ERC-20 tokens",
       assistant: {
         description: "Send tokens",
         params: ["token", "sendAmount", "receiverAddress"],

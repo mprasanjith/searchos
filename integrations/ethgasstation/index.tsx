@@ -14,8 +14,8 @@ export class EthGasStationExtension extends Extension {
   commands: Command[] = [
     {
       name: "get-gas-price",
-      title: "Get gas price",
-      description: "Get gas prices from EthGasStation",
+      title: "Current gas fee",
+      description: "Real-time prices via EthGasStation",
       assistant: {
         description: "Get gas prices",
         params: [],

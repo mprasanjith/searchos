@@ -15,8 +15,10 @@ export class OpenAIExtension extends Extension {
   commands: Command[] = [
     {
       name: "natural-language",
-      title: (query) => query,
-      description: "Get AI powered responses",
+      title: (query) => {
+        return query?.length > 30 ? query.slice(0, 25) + "..." : query;
+      },
+      description: "Query web3 using AI",
       assistant: {
         description: "Get responses from OpenAI",
         params: [],
@@ -25,7 +27,9 @@ export class OpenAIExtension extends Extension {
         if (query.length < 8 || query.split(" ").length < 2) return false;
         return true;
       },
-      handler: ({ query, chainId }) => <ChatGPT client={this.client} query={query} chainId={chainId} />,
+      handler: ({ query, chainId }) => (
+        <ChatGPT client={this.client} query={query} chainId={chainId} />
+      ),
     },
   ];
 }

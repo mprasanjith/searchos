@@ -62,8 +62,8 @@ export class LiFiExtension extends Extension {
   commands: Command[] = [
     {
       name: "swap-tokens",
-      title: `Swap tokens`,
-      description: "Swap tokens via LI.FI aggregator",
+      title: `Swap`,
+      description: "Swap tokens via Li.Fi",
       assistant: {
         description: "Swap tokens",
         params: ["inToken", "outToken", "sendAmount"],
@@ -82,12 +82,17 @@ export class LiFiExtension extends Extension {
 
         if (assistantQuery) {
           const inTokenSymbol = assistantQuery["inToken"];
-          const inToken = this.tokenListClient.findTokenBySymbol(inTokenSymbol, chainId);
+          const inToken = this.tokenListClient.findTokenBySymbol(
+            inTokenSymbol,
+            chainId
+          );
           if (inToken) params.fromToken = inToken.address;
 
           const outTokenSymbol = assistantQuery["outToken"];
-          const outToken =
-            this.tokenListClient.findTokenBySymbol(outTokenSymbol, chainId);
+          const outToken = this.tokenListClient.findTokenBySymbol(
+            outTokenSymbol,
+            chainId
+          );
           if (outToken) params.toToken = outToken.address;
 
           const sendAmount = sanitizeAmount(assistantQuery["sendAmount"]);
@@ -99,20 +104,14 @@ export class LiFiExtension extends Extension {
     },
     {
       name: "bridge-tokens",
-      title: `Bridge tokens`,
-      description: "Bridge tokens via LI.FI aggregator",
+      title: `Bridge`,
+      description: "Bridge tokens via Li.Fi",
       assistant: {
-        description: "Swap tokens",
+        description: "Bridge tokens",
         params: ["inToken", "outToken", "sendAmount", "toChain"],
       },
       shouldHandle: (query: string) => {
-        const wordsToHandle = [
-          "bridge",
-          "tokens",
-          "erc20",
-          "crosschain",
-          "cross-chain",
-        ];
+        const wordsToHandle = ["bridge"];
         return wordsToHandle.some(
           (word) => query.trim().toLowerCase() === word
         );
@@ -124,12 +123,17 @@ export class LiFiExtension extends Extension {
 
         if (assistantQuery) {
           const inTokenSymbol = assistantQuery["inToken"];
-          const inToken = this.tokenListClient.findTokenBySymbol(inTokenSymbol, chainId);
+          const inToken = this.tokenListClient.findTokenBySymbol(
+            inTokenSymbol,
+            chainId
+          );
           if (inToken) params.fromToken = inToken.address;
 
           const outTokenSymbol = assistantQuery["outToken"];
-          const outToken =
-            this.tokenListClient.findTokenBySymbol(outTokenSymbol, chainId);
+          const outToken = this.tokenListClient.findTokenBySymbol(
+            outTokenSymbol,
+            chainId
+          );
           if (outToken) params.toToken = outToken.address;
 
           const sendAmount = sanitizeAmount(assistantQuery["sendAmount"]);
