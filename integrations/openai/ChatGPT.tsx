@@ -44,7 +44,7 @@ const ChatGPT: React.FC<ChatGPTProps> = ({ query, client, chainId }) => {
 
   return (
     <Detail isPending={isLoading || isValidating} isError={error}>
-      <Box mih="35rem">
+      <Box>
         {data?.message && (
           <Center p="lg" mx="auto">
             <Alert icon={<IconInfoCircle size="1rem" />} color="violet">
@@ -53,12 +53,18 @@ const ChatGPT: React.FC<ChatGPTProps> = ({ query, client, chainId }) => {
           </Center>
         )}
 
-        {Component && (
+        {Component ? (
           <Component
             query={query}
             assistantQuery={data?.query}
             chainId={chainId}
           />
+        ) : (
+          <Center p="lg" mx="auto">
+            <Alert icon={<IconInfoCircle size="1rem" />} color="violet">
+              Sorry, I didn&apos;t understand that.
+            </Alert>
+          </Center>
         )}
       </Box>
     </Detail>
