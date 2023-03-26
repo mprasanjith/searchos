@@ -1,4 +1,14 @@
-SearchOS
+<img width="1920" alt="readme_searchos" src="https://user-images.githubusercontent.com/34306844/227747197-7c7b0d29-f9d5-4978-8966-98107b7bc9f7.png">
+
+# SearchOS
+
+**All your favorite web3 actions, one search away 🔎**
+
+SearchOS is a web3 search engine making it easy to interact with your favorite blockchain applications. Query wallet balances, see real-time prices, swap, bridge, and send tokens (cross-chain) in just a few clicks.
+
+- 🧠 Out-of-the-box natural language processing
+- 🛠️ Endless integration opportunities
+- 🧗‍♂️ Built on top of [Next.js](https://nextjs.org/) and [wagmi](https://github.com/tmm/wagmi) 
 
 ## Getting Started
 
@@ -23,6 +33,12 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+## Contributions
+
+Feel free to [open an issue](https://github.com/mprasanjith/searchos/issues/new/choose) or [a PR](https://github.com/mprasanjith/searchos/compare). More information and guidelines TBD.
+
 
 ## Learn More
 
