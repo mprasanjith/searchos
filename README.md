@@ -37,7 +37,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Contributions
 
-Feel free to open an issue or a PR. More information and guidelines TBD.
+Feel free to [open an issue](https://github.com/mprasanjith/searchos/issues/new/choose) or [a PR](https://github.com/mprasanjith/searchos/compare). More information and guidelines TBD.
 
 
 ## Learn More
