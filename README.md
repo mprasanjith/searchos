@@ -10,6 +10,12 @@ SearchOS is a web3 search engine making it easy to interact with your favorite b
 - 🛠️ Endless integration opportunities
 - 🧗‍♂️ Built on top of [Next.js](https://nextjs.org/) and [wagmi](https://github.com/tmm/wagmi) 
 
+**Live on [searchos.xyz](https://searchos.xyz/)**
+
+## Demo
+
+**[View the demo here](https://drive.google.com/file/d/1dICr_P9-wMKBQT_ePRMLbCkSlWj3xX4E/view?usp=sharing)**
+
 ## Getting Started
 
 ```
