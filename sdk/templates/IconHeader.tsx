@@ -4,12 +4,14 @@ interface IconHeaderProps {
   title?: string | null;
   subtitle?: string | null;
   imageUrl?: string | null;
+  noBottomBorder?: boolean;
 }
 
 const IconHeader: React.FC<IconHeaderProps> = ({
   title,
   subtitle,
   imageUrl,
+  noBottomBorder
 }) => {
   return (
     <Flex
@@ -18,7 +20,7 @@ const IconHeader: React.FC<IconHeaderProps> = ({
       direction="column"
       align="center"
       sx={(theme) => ({
-        borderBottom: `1px solid ${theme.colors.gray[1]}`,
+        borderBottom: !noBottomBorder ? `1px solid ${theme.colors.gray[1]}` : "none",
       })}
     >
       <Avatar src={imageUrl} radius="xl" size="lg" />
