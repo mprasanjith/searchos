@@ -7,10 +7,23 @@ export default async function handler(
   res: NextApiResponse<any>
 ) {
   const systemMessage = buildSystemMessage(getExtensionsForGPT());
-  const completion = await getChatCompletion(
+  let completion = null;
+  completion = await getChatCompletion(
     systemMessage,
     req.query.query as string
   );
-  res.setHeader("Cache-Control", "max-age=0, s-maxage=120");
+
+  if (!completion) {
+    // Looks like Chat Completion failed, try again
+    completion = await getChatCompletion(
+      systemMessage,
+      req.query.query as string
+    );
+  }
+
+  if (completion) {
+    res.setHeader("Cache-Control", "max-age=0, s-maxage=86400");
+  }
+
   res.json(completion);
 }
