@@ -76,6 +76,6 @@ export const getChatCompletion = async (
     const responseJson: CommandCompletion = JSON.parse(response);
     return responseJson;
   } catch (e) {
-    return { message: response } as CommandCompletion;
+    return null;
   }
 };
