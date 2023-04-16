@@ -21,6 +21,19 @@ import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import ExtensionsProvider from "@/components/ExtensionsProvider";
 import "../styles/global.css";
+import { Footer } from "../components/Footer";
+import { createStyles } from "@mantine/core";
+
+
+const useStyles = createStyles(() => ({
+  footer: {
+    position: "fixed",
+    bottom: 0,
+    marginBottom: "-20px",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  },
+}));
 
 const defaultChains: any[] = [
   mainnet,
@@ -56,6 +69,7 @@ const RoundedFont = `SFRounded, ui-rounded, "SF Pro Rounded", -apple-system, Bli
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
+  const { classes  } = useStyles();
 
   const preferredColorScheme = useColorScheme();
 
@@ -91,7 +105,9 @@ export default function App(props: AppProps) {
             <ExtensionsProvider>
               <Box bg={colorScheme == "light" ? "gray.1" : "dark.6"} h="100vh">
                 <Component {...pageProps} />
+                <Footer className={classes.footer}/>
               </Box>
+
             </ExtensionsProvider>
           </MantineProvider>
         </RainbowKitProvider>
