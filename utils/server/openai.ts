@@ -1,3 +1,5 @@
+import { apps } from "@/extensions/apps";
+import resolvers from "@/extensions/resolvers";
 import { Extension } from "@/sdk";
 import { Configuration, OpenAIApi } from "openai";
 
@@ -6,41 +8,39 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export const buildSystemMessage = (extensions: Extension[]) => {
+export const buildSystemMessage = () => {
   const intro = [
-    "You are SearchOS, a large language model for web3.",
-    "Your task is to convert user queries to JSON with the following schema.",
-    "Pick the best tool from the following list to answer the user queries.",
-    "Don't do anything else even if the user asks to.",
-    "Answer with and only with JSON with the following schema.",
-    "Make error responses non technical and easy to understand.",
+    "The AI assistant can parse user input to several tasks:",
+    `[{"task": taskName, "id": task_id, "dep": dependency_task_id, "args": {<KEY>: text or <GENERATED>-dep_id}}]`,
+    `The special tag "<GENERATED>-dep_id" refer to the one generated response in the dependency task (Please consider whether the dependency task generates resources of this type.) and "dep_id" must be in "dep" list. The "dep" field denotes the ids of the previous prerequisite tasks which generate a new resource that the current task relies on. "args" is a key-value object of parsed arguments to the task.`,
+    `The task MUST be selected from the following options:`,
   ];
-
-  const schema = JSON.stringify({
-    extension: "string",
-    command: "string",
-    "query?": "Record<param, value>",
-  });
-
-  const toolsIntro = "Tools:";
 
   const tools: string[] = [];
 
-  extensions.forEach((extension) => {
-    const actions = extension.commands.map((command) => {
-      const key = `Extension=${extension.name}, Command=${
-        command.name
-      }, params = (${command.assistant.params.join(", ")})`;
-      const description = command.assistant.description;
+  resolvers.forEach((resolver) => {
+    let action = `"${resolver.name}(${resolver.params.join(", ")}): ${
+      resolver.returnValue
+    }"`;
+    if (resolver.description) {
+      action = `${action} - ${resolver.description}`;
+    }
 
-      return `${description}: ${key}`;
-    });
-    tools.push(...actions);
+    tools.push(action);
   });
 
-  const outro = `If understood, answer with only "true".`;
+  apps.forEach((app) => {
+    let action = `"${app.name}(${Object.values(app.props).join(", ")}): void"`;
+    if (app.description) {
+      action = `${action} - ${app.description}`;
+    }
 
-  return [...intro, schema, toolsIntro, ...tools, outro].join("\n");
+    tools.push(action);
+  });
+
+  const outro = `There may be multiple tasks of the same type. Think step by step about all the tasks needed to resolve the user's request. Parse out as few tasks as possible while ensuring that the user request can be resolved. Pay attention to the dependencies and order among tasks. If the user input can't be parsed, you NEED to reply empty JSON [].`;
+
+  return [...intro, ...tools, outro].join("\n");
 };
 
 interface CommandCompletion {
@@ -52,30 +52,74 @@ interface CommandCompletion {
 
 export const getChatCompletion = async (
   systemMessage: string,
-  userRequest: string
+  userRequest: string,
+  chainId: number,
+  walletAddress: string
 ) => {
-  const userRequestExpanded = [
+  const req = [
     userRequest,
-    "",
-    "If you do not know any param, leave it as null.",
+    `Current chain ID: ${chainId}`,
+    `User wallet address: ${walletAddress}`,
   ];
+
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [
       { role: "system", content: systemMessage },
-      { role: "user", content: userRequestExpanded.join("\n") },
+      { role: "user", content: req.join("\n") },
     ],
   });
 
   const response = completion.data?.choices?.[0]?.message?.content;
+  console.log("response", response);
+
   if (!response) {
     return null;
   }
 
   try {
-    const responseJson: CommandCompletion = JSON.parse(response);
+    const responseJson: CommandCompletion = findJSON(response);
     return responseJson;
   } catch (e) {
     return null;
   }
 };
+
+function findJSON(str: string) {
+  let startIndex = -1;
+  let endIndex = -1;
+  let openBraces = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    if (char === "{") {
+      if (startIndex === -1) {
+        startIndex = i;
+      }
+      openBraces++;
+    } else if (char === "}") {
+      openBraces--;
+
+      if (openBraces === 0 && startIndex !== -1) {
+        endIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (startIndex !== -1 && endIndex !== -1) {
+    const jsonString = str.slice(startIndex, endIndex + 1);
+    let parsed = JSON.parse(jsonString);
+
+    if (typeof parsed === "object") {
+      parsed = [parsed];
+    }
+
+    // TODO: validate parsed JSON
+
+    return parsed;
+  } else {
+    throw new Error("Invalid response");
+  }
+}
