@@ -1,5 +1,5 @@
 import { getExtensionsForGPT } from "@/utils/extensions";
-import { buildSystemMessage, getChatCompletion } from "@/utils/server/openai";
+import { buildSystemMessage, getCompletion } from "@/utils/server/openai";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -8,14 +8,14 @@ export default async function handler(
 ) {
   const systemMessage = buildSystemMessage(getExtensionsForGPT());
   let completion = null;
-  completion = await getChatCompletion(
+  completion = await getCompletion(
     systemMessage,
     req.query.query as string
   );
 
   if (!completion) {
     // Looks like Chat Completion failed, try again
-    completion = await getChatCompletion(
+    completion = await getCompletion(
       systemMessage,
       req.query.query as string
     );

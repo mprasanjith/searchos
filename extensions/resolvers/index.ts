@@ -1,36 +1,57 @@
 import { BigNumber } from "ethers";
-import { CHAIN_ID, CHAIN_NAME, ETH_ADDRESS, ETH_TOKEN_ADDRESS, Param, Resolver, TOKEN_AMOUNT, TOKEN_NAME, WALLET_NAME } from "../types";
+import {
+  Chain,
+  CHAIN_NAME,
+  Wallet,
+  Token,
+  Param,
+  Resolver,
+  TOKEN_AMOUNT,
+  TOKEN_NAME,
+  WALLET_NAME,
+} from "../types";
 
 const resolvers: Resolver[] = [
   {
     name: "ResolveWalletAddress",
-    params: [Param.WALLET_NAME],
-    returnValue: Param.ETH_ADDRESS,
-    handler: async (ensName: WALLET_NAME) => {
-      return "0x1234" as ETH_ADDRESS;
+    params: {
+      walletName: Param.WALLET_NAME,
+      "chain?": Param.CHAIN,
+    },
+    returnValue: Param.WALLET,
+    handler: async (ensName: WALLET_NAME, chain: Chain) => {
+      return { address: "0x1234", chain: 1 } as Wallet;
     },
   },
   {
     name: "ResolveChainId",
-    params: [Param.CHAIN_NAME],
-    returnValue: Param.CHAIN_ID,
+    params: { chainName: Param.CHAIN_NAME },
+    returnValue: Param.CHAIN,
     handler: async (chainName: CHAIN_NAME) => {
-      return 1 as CHAIN_ID;
+      return 1 as Chain;
     },
   },
   {
     name: "ResolveTokenAddress",
-    params: [Param.TOKEN_NAME, Param.CHAIN_ID],
-    returnValue: Param.ETH_TOKEN_ADDRESS,
-    handler: async (tokenName: TOKEN_NAME, chainId: CHAIN_ID) => {
-      return "0x1234" as ETH_TOKEN_ADDRESS;
+    params: {
+      tokenName: Param.TOKEN_NAME,
+      "chain?": Param.CHAIN,
+    },
+    returnValue: Param.TOKEN,
+    handler: async (tokenName: TOKEN_NAME, chain: Chain) => {
+      return { address: "0x1234", chain } as Token;
     },
   },
   {
     name: "ParseTokenAmount",
-    params: [Param.ETH_TOKEN_ADDRESS, Param.CHAIN_ID, Param.TOKEN_AMOUNT],
+    description: "Parse the token amount as a BigNumber from the user input.",
+    params: {
+      tokenAmount: Param.TOKEN_AMOUNT,
+      token: Param.TOKEN,
+      "chain?": Param.CHAIN,
+    },
     returnValue: Param.TOKEN_AMOUNT_BN,
-    handler: async (tokenName: TOKEN_NAME, chainId: CHAIN_ID, tokenAmount: TOKEN_AMOUNT) => {
+    handler: async (tokenAmount: TOKEN_AMOUNT, token: Token, chain: Chain) => {
       return BigNumber.from(1);
     },
   },

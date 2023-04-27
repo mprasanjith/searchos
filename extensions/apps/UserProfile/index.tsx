@@ -1,12 +1,12 @@
-import { App, Param } from "@/extensions/types";
+import { App, Param, Wallet } from "@/extensions/types";
 import useSWR from "swr";
 
 interface UserProfileProps {
-  address: `0x${string}`;
+  wallet: Wallet;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({ address }) => {
-  const { data } = useSWR(`/api/data/wallet?address=${address}`);
+const UserProfile: React.FC<UserProfileProps> = ({ wallet }) => {
+  const { data } = useSWR(`/api/data/wallet?address=${wallet.address}`);
   console.log(data);
   return <div>User Profile</div>;
 };
@@ -14,7 +14,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ address }) => {
 const handler: App = {
   name: "ShowUserProfileAndBalances",
   props: {
-    address: Param.ETH_ADDRESS,
+    wallet: Param.WALLET,
   },
   description: "Show user profile and balances",
   component: UserProfile,

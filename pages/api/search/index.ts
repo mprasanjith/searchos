@@ -1,4 +1,4 @@
-import { buildSystemMessage, getChatCompletion } from "@/utils/server/openai";
+import { buildSystemMessage, getCompletion } from "@/utils/server/openai";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {
@@ -15,7 +15,7 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   const systemMessage = buildSystemMessage();
-  const completion = await getChatCompletion(
+  const completion = await getCompletion(
     systemMessage,
     query,
     parseInt(chainId),

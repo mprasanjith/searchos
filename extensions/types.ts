@@ -3,36 +3,40 @@ import { BigNumber } from "ethers";
 export type WALLET_NAME = string;
 export type TOKEN_NAME = string;
 export type CHAIN_NAME = string;
-export type ETH_ADDRESS = `0x${string}`;
-export type ETH_TOKEN_ADDRESS = `0x${string}`;
-export type CHAIN_ID = number;
 export type TOKEN_AMOUNT = string;
-export type TOKEN_AMOUNT_BN = BigNumber;
+
+export type Chain = number;
+export type Wallet = { chain: Chain; address: `0x${string}` };
+export type Token = { chain: Chain; address: `0x${string}` };
+export type TokenAmount = { chain: Chain; token: Token; amount: BigNumber };
 
 export type ParamType =
   | WALLET_NAME
   | TOKEN_NAME
   | CHAIN_NAME
-  | ETH_ADDRESS
-  | ETH_TOKEN_ADDRESS
-  | CHAIN_ID
   | TOKEN_AMOUNT
-  | TOKEN_AMOUNT_BN;
+  | Wallet
+  | Token
+  | Chain
+  | TokenAmount;
 
 export enum Param {
-  WALLET_NAME = "walletName",
-  TOKEN_NAME = "tokenName",
-  CHAIN_NAME = "chainName",
-  ETH_ADDRESS = "ethAddress",
-  ETH_TOKEN_ADDRESS = "ethTokenAddress",
-  CHAIN_ID = "chainId",
-  TOKEN_AMOUNT = "tokenAmount",
-  TOKEN_AMOUNT_BN = "tokenAmountBN",
+  // Unparsed
+  WALLET_NAME = "walletNameString",
+  TOKEN_NAME = "tokenNameString",
+  CHAIN_NAME = "chainNameString",
+  TOKEN_AMOUNT = "tokenAmountString",
+
+  // Parsed
+  WALLET = "Wallet",
+  TOKEN = "Token",
+  CHAIN = "Chain",
+  TOKEN_AMOUNT_BN = "TokenAmount",
 }
 
 export interface Resolver {
   name: string;
-  params: Param[];
+  params: Record<string, Param>;
   returnValue: Param;
   description?: string;
   handler: (...args: any[]) => Promise<any>;

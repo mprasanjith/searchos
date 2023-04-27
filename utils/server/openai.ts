@@ -10,18 +10,18 @@ const openai = new OpenAIApi(configuration);
 
 export const buildSystemMessage = () => {
   const intro = [
-    "The AI assistant can parse user input to several tasks:",
-    `[{"task": taskName, "id": task_id, "dep": dependency_task_id, "args": {<KEY>: text or <GENERATED>-dep_id}}]`,
-    `The special tag "<GENERATED>-dep_id" refer to the one generated response in the dependency task (Please consider whether the dependency task generates resources of this type.) and "dep_id" must be in "dep" list. The "dep" field denotes the ids of the previous prerequisite tasks which generate a new resource that the current task relies on. "args" is a key-value object of parsed arguments to the task.`,
+    "The AI assistant can parse user input to several tasks and Put it in the following JSON structure:",
+    `[{"task": taskName, "id": task_id, "args": {<KEY>: text or <GENERATED>-dep_id}}]`,
+    `The special tag "<GENERATED>-dep_id" refer to the one generated response in the dependency task (Please consider whether the dependency task generates resources of this type.). "args" is a key-value object of parsed arguments to the task.`,
     `The task MUST be selected from the following options:`,
   ];
 
   const tools: string[] = [];
 
   resolvers.forEach((resolver) => {
-    let action = `"${resolver.name}(${resolver.params.join(", ")}): ${
-      resolver.returnValue
-    }"`;
+    let action = `"${resolver.name}(${Object.entries(resolver.params)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(", ")}): ${resolver.returnValue}"`;
     if (resolver.description) {
       action = `${action} - ${resolver.description}`;
     }
@@ -30,7 +30,9 @@ export const buildSystemMessage = () => {
   });
 
   apps.forEach((app) => {
-    let action = `"${app.name}(${Object.values(app.props).join(", ")}): void"`;
+    let action = `"${app.name}(${Object.entries(app.props)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(", ")}): void"`;
     if (app.description) {
       action = `${action} - ${app.description}`;
     }
@@ -50,7 +52,7 @@ interface CommandCompletion {
   message?: string;
 }
 
-export const getChatCompletion = async (
+export const getCompletion = async (
   systemMessage: string,
   userRequest: string,
   chainId: number,
@@ -61,6 +63,9 @@ export const getChatCompletion = async (
     `Current chain ID: ${chainId}`,
     `User wallet address: ${walletAddress}`,
   ];
+
+  console.log("systemMessage", systemMessage);
+  console.log("req", req);
 
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
@@ -86,22 +91,33 @@ export const getChatCompletion = async (
 };
 
 function findJSON(str: string) {
+  let preparsed: string;
+  try {
+    const json = JSON.parse(str);
+    if (typeof json === "object") {
+      preparsed = JSON.stringify([json]);
+    }
+    preparsed = JSON.stringify(json);
+  } catch (e) {
+    preparsed = str;
+  }
+
   let startIndex = -1;
   let endIndex = -1;
-  let openBraces = 0;
+  let openBrackets = 0;
 
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
+  for (let i = 0; i < preparsed.length; i++) {
+    const char = preparsed[i];
 
-    if (char === "{") {
+    if (char === "[") {
       if (startIndex === -1) {
         startIndex = i;
       }
-      openBraces++;
-    } else if (char === "}") {
-      openBraces--;
+      openBrackets++;
+    } else if (char === "]") {
+      openBrackets--;
 
-      if (openBraces === 0 && startIndex !== -1) {
+      if (openBrackets === 0 && startIndex !== -1) {
         endIndex = i;
         break;
       }
@@ -109,12 +125,8 @@ function findJSON(str: string) {
   }
 
   if (startIndex !== -1 && endIndex !== -1) {
-    const jsonString = str.slice(startIndex, endIndex + 1);
+    const jsonString = preparsed.slice(startIndex, endIndex + 1);
     let parsed = JSON.parse(jsonString);
-
-    if (typeof parsed === "object") {
-      parsed = [parsed];
-    }
 
     // TODO: validate parsed JSON
 
