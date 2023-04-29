@@ -1,6 +1,5 @@
 import { apps } from "@/extensions/apps";
 import resolvers from "@/extensions/resolvers";
-import { Extension } from "@/sdk";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -13,6 +12,7 @@ export const buildSystemMessage = () => {
     "The AI assistant can parse user input to several tasks and Put it in the following JSON structure:",
     `[{"task": taskName, "id": task_id, "args": {<KEY>: text or <GENERATED>-dep_id}}]`,
     `The special tag "<GENERATED>-dep_id" refer to the one generated response in the dependency task (Please consider whether the dependency task generates resources of this type.). "args" is a key-value object of parsed arguments to the task.`,
+    `Keys and values in "args" must be string. dep_id should be a number.`,
     `The task MUST be selected from the following options:`,
   ];
 
@@ -58,20 +58,20 @@ export const getCompletion = async (
   chainId: number,
   walletAddress: string
 ) => {
-  const req = [
+  const userMessage = [
     userRequest,
     `Current chain ID: ${chainId}`,
     `User wallet address: ${walletAddress}`,
-  ];
+  ].join("\n");
 
   console.log("systemMessage", systemMessage);
-  console.log("req", req);
+  console.log("userMessage", userMessage);
 
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [
       { role: "system", content: systemMessage },
-      { role: "user", content: req.join("\n") },
+      { role: "user", content: userMessage },
     ],
   });
 
