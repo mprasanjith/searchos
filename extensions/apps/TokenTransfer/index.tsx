@@ -1,4 +1,4 @@
-import { App, Param, Token, TokenAmount, Wallet } from "@/extensions/types";
+import { App, Param, Token, TokenAmount, Wallet } from "@/utils/types";
 import { BigNumber } from "ethers";
 import useSWR from "swr";
 

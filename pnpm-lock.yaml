@@ -23,10 +23,13 @@ specifiers:
   eslint: 8.36.0
   eslint-config-next: 13.2.4
   ethers: ^5
+  graphology: ^0.25.1
+  graphology-dag: ^0.2.0
   millify: ^6.1.0
   next: 13.2.4
   next-transpile-modules: ^10.0.0
   openai: ^3.2.1
+  p-waterfall: ^3.0.0
   react: 18.2.0
   react-dom: 18.2.0
   react-markdown: ^8.0.5
@@ -57,10 +60,13 @@ dependencies:
   eslint: 8.36.0
   eslint-config-next: 13.2.4_j4766f7ecgqbon3u7zlxn5zszu
   ethers: 5.7.2
+  graphology: 0.25.1
+  graphology-dag: 0.2.0
   millify: 6.1.0
   next: 13.2.4_biqbaboplfbrettd7655fr4n2y
   next-transpile-modules: 10.0.0
   openai: 3.2.1
+  p-waterfall: 3.0.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-markdown: 8.0.5_pmekkgnqduwlme35zpnqhenc34
@@ -5717,6 +5723,30 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: false
 
+  /graphology-dag/0.2.0:
+    resolution: {integrity: sha512-Bpf1P1FhzObnpX2s/L6YJUXraTcag+qnXDjMzB44b0AkZZD5/f3Un3gDna+Y2ofuERuAyflqzWAgFdRQC/+YgA==}
+    peerDependencies:
+      graphology-types: '>=0.19.0'
+    dependencies:
+      graphology-utils: 2.5.2
+      mnemonist: 0.39.5
+    dev: false
+
+  /graphology-utils/2.5.2:
+    resolution: {integrity: sha512-ckHg8MXrXJkOARk56ZaSCM1g1Wihe2d6iTmz1enGOz4W/l831MBCKSayeFQfowgF8wd+PQ4rlch/56Vs/VZLDQ==}
+    peerDependencies:
+      graphology-types: '>=0.23.0'
+    dev: false
+
+  /graphology/0.25.1:
+    resolution: {integrity: sha512-yYA7BJCcXN2DrKNQQ9Qf22zBHm/yTbyBR71T1MYBbGtywNHsv0QZtk8zaR6zxNcp2hCCZayUkHp9DyMSZCpoxQ==}
+    peerDependencies:
+      graphology-types: '>=0.24.0'
+    dependencies:
+      events: 3.3.0
+      obliterator: 2.0.4
+    dev: false
+
   /graphql-request/5.2.0_graphql@16.6.0:
     resolution: {integrity: sha512-pLhKIvnMyBERL0dtFI3medKqWOz/RhHdcgbZ+hMMIb32mEPa5MJSzS4AuXxfI4sRAu6JVVk5tvXuGfCWl9JYWQ==}
     peerDependencies:
@@ -6915,6 +6945,12 @@ packages:
     resolution: {integrity: sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==}
     dev: false
 
+  /mnemonist/0.39.5:
+    resolution: {integrity: sha512-FPUtkhtJ0efmEFGpU14x7jGbTB+s18LrzRL2KgoWz9YvcY3cPomz8tih01GbHwnGk/OmkOKfqd/RAQoc8Lm7DQ==}
+    dependencies:
+      obliterator: 2.0.4
+    dev: false
+
   /mocha/10.2.0:
     resolution: {integrity: sha512-IDY7fl/BecMwFHzoqF2sg/SHHANeBoMMXFlS9r0OXKDssYE1M5O43wUY/9BVPeIvfH2zmEbBfseqN9gBQZzXkg==}
     engines: {node: '>= 14.0.0'}
@@ -7168,6 +7204,10 @@ packages:
       es-abstract: 1.21.2
     dev: false
 
+  /obliterator/2.0.4:
+    resolution: {integrity: sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==}
+    dev: false
+
   /on-exit-leak-free/0.2.0:
     resolution: {integrity: sha512-dqaz3u44QbRXQooZLTUKU41ZrzYrcvLISVgbrzbyCMxpmSLJvZ3ZamIJIZ29P6OhZIkNIQKosdeM6t1LYbA9hg==}
     dev: false
@@ -7247,9 +7287,21 @@ packages:
       p-limit: 3.1.0
     dev: false
 
+  /p-reduce/3.0.0:
+    resolution: {integrity: sha512-xsrIUgI0Kn6iyDYm9StOpOeK29XM1aboGji26+QEortiFST1hGZaUQOLhtEbqHErPpGW/aSz6allwK2qcptp0Q==}
+    engines: {node: '>=12'}
+    dev: false
+
   /p-try/2.2.0:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
+    dev: false
+
+  /p-waterfall/3.0.0:
+    resolution: {integrity: sha512-+DWIZJfgRUzPhv9lLzwb3ILlE+YLpva4ko31j0Z/P9BilqhMZnZibx4qyK3wnIIipu4embJf9WOSVjHmjNKiYg==}
+    engines: {node: '>=12'}
+    dependencies:
+      p-reduce: 3.0.0
     dev: false
 
   /parent-module/1.0.1:

@@ -1,4 +1,4 @@
-import { App, Param } from "../types";
+import { App, Param } from "../../utils/types";
 import userProfile from "./UserProfile";
 import TokenTransfer from "./TokenTransfer";
 

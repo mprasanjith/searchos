@@ -9,7 +9,7 @@ import {
   TOKEN_AMOUNT,
   TOKEN_NAME,
   WALLET_NAME,
-} from "../types";
+} from "../../utils/types";
 
 const resolvers: Resolver[] = [
   {

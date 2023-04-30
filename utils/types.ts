@@ -28,9 +28,9 @@ export enum Param {
   TOKEN_AMOUNT = "tokenAmountString",
 
   // Parsed
-  WALLET = "Wallet",
-  TOKEN = "Token",
-  CHAIN = "Chain",
+  WALLET = "WalletAddress",
+  TOKEN = "TokenReference",
+  CHAIN = "ChainIdNumber",
   TOKEN_AMOUNT_BN = "TokenAmount",
 }
 
@@ -47,4 +47,10 @@ export interface App {
   props: Record<string, Param>;
   description?: string;
   component: React.FC<any>;
+}
+
+export interface Task {
+  id: number;
+  task: string;
+  args: Record<string, string>;
 }

@@ -1,4 +1,5 @@
 import { buildSystemMessage, getCompletion } from "@/utils/server/openai";
+import { buildGraph, executeGraph } from "@/utils/shared/graph";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {
@@ -21,12 +22,32 @@ const handler: NextApiHandler = async (req, res) => {
     parseInt(chainId),
     walletAddress
   );
+  if (!completion) {
+    throw new Error("Error resolving query");
+  }
+
+  const graph = buildGraph(completion);
+
+  graph.forEachNode((node: any, attr: Record<string, any>) => {
+    console.log(node, attr);
+  });
+
+  const executedGraph: any = await executeGraph(graph);
+  const uiNodeId = executedGraph.findNode(
+    (_: any, attributes: Record<string, any>) => !!attributes.isInterface
+  );
+
+  if (!uiNodeId) {
+    throw new Error("No UI node found");
+  }
+
+  const uiNode = graph.getNodeAttributes(uiNodeId);
 
   if (completion) {
     res.setHeader("Cache-Control", "max-age=0, s-maxage=86400");
   }
 
-  res.json(completion);
+  res.json(uiNode);
 };
 
 export default handler;

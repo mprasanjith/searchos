@@ -1,4 +1,4 @@
-import { App, Param, Wallet } from "@/extensions/types";
+import { App, Param, Wallet } from "@/utils/types";
 import useSWR from "swr";
 
 interface UserProfileProps {

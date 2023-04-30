@@ -1,6 +1,7 @@
 import { apps } from "@/extensions/apps";
 import resolvers from "@/extensions/resolvers";
 import { Configuration, OpenAIApi } from "openai";
+import { Task } from "../types";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -10,9 +11,10 @@ const openai = new OpenAIApi(configuration);
 export const buildSystemMessage = () => {
   const intro = [
     "The AI assistant can parse user input to several tasks and Put it in the following JSON structure:",
-    `[{"task": taskName, "id": task_id, "args": {<KEY>: text or <GENERATED>-dep_id}}]`,
-    `The special tag "<GENERATED>-dep_id" refer to the one generated response in the dependency task (Please consider whether the dependency task generates resources of this type.). "args" is a key-value object of parsed arguments to the task.`,
-    `Keys and values in "args" must be string. dep_id should be a number.`,
+    `[{"task": taskName, "id": task_id_num, "args": {<KEY>: text or <GENERATED>-dep_task_id_num}}]`,
+    `The special string tag "<GENERATED>-dep_task_id_num" refer to the one generated response in the dependency task (Please consider whether the dependency task generates resources of this type.). For example, <GENERATED>-1, <GENERATED>-2 ...`,
+    `"args" is a key-value object of parsed arguments to the task.`,
+    `Do not format the JSON. Do not have any other messages other than the JSON.`,
     `The task MUST be selected from the following options:`,
   ];
 
@@ -45,13 +47,6 @@ export const buildSystemMessage = () => {
   return [...intro, ...tools, outro].join("\n");
 };
 
-interface CommandCompletion {
-  extension?: string;
-  command?: string;
-  query?: Record<string, string>;
-  message?: string;
-}
-
 export const getCompletion = async (
   systemMessage: string,
   userRequest: string,
@@ -64,9 +59,6 @@ export const getCompletion = async (
     `User wallet address: ${walletAddress}`,
   ].join("\n");
 
-  console.log("systemMessage", systemMessage);
-  console.log("userMessage", userMessage);
-
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [
@@ -76,14 +68,13 @@ export const getCompletion = async (
   });
 
   const response = completion.data?.choices?.[0]?.message?.content;
-  console.log("response", response);
 
   if (!response) {
     return null;
   }
 
   try {
-    const responseJson: CommandCompletion = findJSON(response);
+    const responseJson: Task[] = findJSON(response);
     return responseJson;
   } catch (e) {
     return null;
@@ -127,9 +118,6 @@ function findJSON(str: string) {
   if (startIndex !== -1 && endIndex !== -1) {
     const jsonString = preparsed.slice(startIndex, endIndex + 1);
     let parsed = JSON.parse(jsonString);
-
-    // TODO: validate parsed JSON
-
     return parsed;
   } else {
     throw new Error("Invalid response");
