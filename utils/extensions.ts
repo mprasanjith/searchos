@@ -1,11 +1,12 @@
 import { CoinGeckoExtension } from "@/integrations/coingecko";
-import { CovalentExtension } from "@/integrations/covalent";
+// import { CovalentExtension } from "@/integrations/covalent";
 import { ERC20TransferExtension } from "@/integrations/erc20transfer";
 import { EthGasStationExtension } from "@/integrations/ethgasstation";
 import { GitHubContributionsExtension } from "@/integrations/ghcontrib";
 import { LensExtension } from "@/integrations/lens";
 import { LiFiExtension } from "@/integrations/lifi";
 import { OpenAIExtension } from "@/integrations/openai";
+import { ZerionExtension } from "@/integrations/zerion";
 
 export const getExtensionsForGPT = () => {
   return [
@@ -13,8 +14,9 @@ export const getExtensionsForGPT = () => {
     new LiFiExtension(),
     new CoinGeckoExtension(),
     new EthGasStationExtension(),
-    new CovalentExtension(),
+    // new CovalentExtension(),
     new LensExtension(),
+    new ZerionExtension()
   ];
 };
 
