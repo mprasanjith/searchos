@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import {
   Chain,
   CHAIN_NAME,
@@ -13,7 +13,7 @@ import {
 import { setupClient } from "@/utils/shared/wagmi";
 import { fetchEnsAddress } from "@wagmi/core";
 import { getAppBaseUrl } from "@/utils/server/url";
-import { ChainData } from "@/utils/types/data";
+import { ChainData, TokenData } from "@/utils/types/data";
 
 setupClient();
 
@@ -62,7 +62,14 @@ const resolvers: Resolver[] = [
     },
     returnValue: Param.TOKEN,
     handler: async (tokenName: TOKEN_NAME, chain: Chain) => {
-      return { address: "0x1234", chain } as Token;
+      const chainId = chain?.chain || "ethereum";
+      const response = await fetch(
+        `${getAppBaseUrl()}/api/data/tokens/search?q=${tokenName}&chain=${chainId}`
+      );
+      if (!response.ok) throw new Error("Error fetching token data");
+
+      const data: TokenData = await response.json();
+      return data;
     },
   },
   {
@@ -71,11 +78,20 @@ const resolvers: Resolver[] = [
     params: {
       tokenAmount: Param.TOKEN_AMOUNT,
       token: Param.TOKEN,
-      "chain?": Param.CHAIN,
     },
     returnValue: Param.TOKEN_AMOUNT_BN,
-    handler: async (tokenAmount: TOKEN_AMOUNT, token: Token, chain: Chain) => {
-      return BigNumber.from(1);
+    handler: async (tokenAmount: TOKEN_AMOUNT, token: Token) => {
+      try {
+        const parsedAmount = ethers.utils.parseUnits(
+          tokenAmount,
+          token.decimals
+        );
+        console.log(tokenAmount, token, parsedAmount);
+
+        return parsedAmount;
+      } catch (error) {
+        throw new Error("Error parsing token amount");
+      }
     },
   },
 ];

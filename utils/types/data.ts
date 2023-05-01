@@ -14,3 +14,12 @@ export interface ChainData {
     url: string;
   }[];
 }
+
+export interface TokenData {
+  address: string;
+  chain: string;
+  name: string;
+  symbol: string;
+  decimals: string;
+  logoURI: string;
+}

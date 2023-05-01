@@ -14,7 +14,7 @@ export const buildSystemMessage = () => {
     `[{"task": taskName, "id": task_id_num, "args": {<KEY>: text or <GENERATED>-dep_task_id_num}}]`,
     `The special string tag "<GENERATED>-dep_task_id_num" refer to the one generated response in the dependency task (Please consider whether the dependency task generates resources of this type.). For example, <GENERATED>-1, <GENERATED>-2 ...`,
     `"args" is a key-value object of parsed arguments to the task.`,
-    `Do not format the JSON. Do not have any other messages other than the JSON.`,
+    `Do not format the JSON. Do not have any other messages other than the JSON. If you do not know any optional field, leave it null.`,
     `The task MUST be selected from the following options:`,
   ];
 
@@ -68,6 +68,7 @@ export const getCompletion = async (
   });
 
   const response = completion.data?.choices?.[0]?.message?.content;
+  console.log(response);
 
   if (!response) {
     return null;

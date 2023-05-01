@@ -82,7 +82,6 @@ async function executeNode(attributes: Record<string, any>) {
     const argsArray = Object.keys(resolver.params)
       .map((param) => param.replace("?", ""))
       .map((param) => attributes?.args?.[param]);
-    console.log({ attributes, argsArray });
     const result = await resolver.handler(...argsArray);
 
     return result;

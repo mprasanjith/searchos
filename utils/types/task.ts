@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { ChainData } from "./data";
+import { ChainData, TokenData } from "./data";
 
 export type WALLET_NAME = string;
 export type TOKEN_NAME = string;
@@ -7,8 +7,8 @@ export type CHAIN_NAME = string;
 export type TOKEN_AMOUNT = string;
 
 export type Chain = ChainData;
+export type Token = TokenData;
 export type Wallet = { chain: Chain; address: `0x${string}` };
-export type Token = { chain: Chain; address: `0x${string}` };
 export type TokenAmount = { chain: Chain; token: Token; amount: BigNumber };
 
 export type ParamType =
