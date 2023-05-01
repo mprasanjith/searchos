@@ -197,7 +197,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
           </Card.Section>
         </Card>
         <Text size="lg" weight="bold">
-          Key Events
+          Insights
         </Text>
         
         {walletTransactions.map((tx, key) => (
