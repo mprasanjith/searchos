@@ -20,8 +20,9 @@ import {
 import useSWR from "swr";
 import { useMemo } from "react";
 import { ZerionClient } from "./client";
-import { IconCopy, IconExternalLink } from "@/sdk";
-
+import { IconCopy } from "@/sdk";
+import { TransactionRow } from "./TransactionRow";
+import { WalletTransactionsData } from "./types";
 interface UserProfileProps {
   client: ZerionClient;
   addressOrEns?: `0x${string}` | string | null;
@@ -59,7 +60,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({
     [addressToUse, address]
   );
 
-
   const {
     data: walletBalance,
     isLoading,
@@ -74,11 +74,20 @@ export const UserProfile: React.FC<UserProfileProps> = ({
         : null
   );
 
+  const { data: walletTransactions } = useSWR(
+    `zerion:get-wallet-transactions:${chain?.id || 1}:${resolvedAddress}`,
+    async () =>
+      resolvedAddress
+        ? await client.getWalletTransactions({
+            address: resolvedAddress,
+          })
+        : null
+  );
+
   const shortenedAddress = useMemo(() => {
     if (!resolvedAddress) return "";
     return `${resolvedAddress.slice(0, 6)}...${resolvedAddress.slice(-4)}`;
   }, [resolvedAddress]);
-
 
   return (
     <Detail isPending={isLoading} isError={error}>
@@ -175,26 +184,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({
         <Text size="lg" weight="bold">
           Key Events
         </Text>
-        <Group position="apart">
-          <Group spacing="md">
-            <Avatar size="md" color="white">
-              🔗
-            </Avatar>
-
-            <Box>
-              <Text size="sm" truncate>
-                hej
-              </Text>
-              <Text size="xs" color="dimmed" truncate>
-                hejhej
-              </Text>
-            </Box>
-          </Group>
-
-          <Box ta="right">
-            <IconExternalLink size="2rem" color="gray" />
-          </Box>
-        </Group>
+        {walletTransactions?.map((tx, key) => (
+          <TransactionRow index={key} tx={tx} key={key} />
+        ))
+        }
       </Stack>
     </Detail>
   );

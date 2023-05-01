@@ -19,7 +19,7 @@ export default async function handler(
   const http = new HTTP();
   try {
     const response = await http.get<WalletPortfolioResponse>(
-      `https://api.zerion.io/v1/wallets/${address}/portfolio/`,
+      `https://api.zerion.io/v1/wallets/${address}/transactions/?currency=usd&page[size]=5`,
       {
         headers: {
           accept: "application/json",
