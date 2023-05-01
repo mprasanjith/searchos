@@ -12,7 +12,7 @@ export class ZerionExtension extends Extension {
   name = "zerion";
   title = "Zerion";
   description =
-    "Zerion provides a unified API bringing visibility to billions of Web3 data points.";
+    "The Zerion API can be used to build feature-rich web3 apps, wallets, and protocols with ease. Across all major blockchains, you can access wallets, assets, and chain data for web3 portfolios.";
   author = "SearchOS";
   icon = icon;
 

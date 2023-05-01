@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { Group, Box, Avatar, Text } from "@/sdk";
 import { HiArrowUpRight } from "react-icons/hi2";
 import { WalletTransactionsData } from "./types";
+import { getTransactionURL } from "./utils";
 
 export const TransactionRow = ({
   tx,
@@ -9,62 +11,96 @@ export const TransactionRow = ({
   tx: WalletTransactionsData;
   index: number;
 }) => {
+  // Check if the transaction is of type "receive" and has a value.
+  const shouldRender =
+    tx.attributes.operation_type !== "receive" ||
+    tx.attributes.transfers.some((transfer) => transfer.value > 0);
+
+  // If the transaction is of type "receive" and doesn't have a value, do not render it.
+  if (!shouldRender) {
+    return null;
+  }
+
   const getActionDetails = (transactionType: string) => {
     switch (transactionType) {
       case "receive":
+        const receiveTransfer = tx.attributes.transfers[0];
         return {
           emoji: "📥",
           category: "Received",
-          description: "Received tokens",
+          description: `${receiveTransfer.quantity.float.toFixed(2)} ${
+            receiveTransfer.fungible_info.symbol
+          }`,
           color: "green",
         };
       case "trade":
+        const tradeTransfer = tx.attributes.transfers[0];
         return {
           emoji: "🔄",
           category: "Trade",
-          description: "Traded tokens",
+          description: `${tradeTransfer.quantity.float.toFixed(2)} ${
+            tradeTransfer.fungible_info.symbol
+          }`,
           color: "indigo",
         };
       case "approve":
+        const approveTransfer = tx.attributes.approvals[0];
         return {
           emoji: "✅",
           category: "Approve",
-          description: "Approved tokens",
+          description: `${approveTransfer.quantity.float.toFixed(2)} ${
+            approveTransfer.fungible_info.symbol
+          }`,
           color: "blue",
         };
       case "burn":
+        const burnTransfer = tx.attributes.transfers[0];
         return {
           emoji: "🔥",
           category: "Burn",
-          description: "Burned tokens",
+          description: `${burnTransfer.quantity.float.toFixed(2)} ${
+            burnTransfer.fungible_info.symbol
+          }`,
           color: "red",
         };
       case "mint":
+        const mintTransfer = tx.attributes.transfers[0];
         return {
           emoji: "💰",
           category: "Mint",
-          description: "Minted tokens",
+          description: `${mintTransfer.quantity.float.toFixed(2)} ${
+            mintTransfer.fungible_info.symbol
+          }`,
           color: "lime",
         };
       case "withdraw":
+        const withdrawTransfer = tx.attributes.transfers[0];
         return {
           emoji: "💼",
           category: "Withdraw",
-          description: "Withdrew tokens",
+          description: `${withdrawTransfer.quantity.float.toFixed(2)} ${
+            withdrawTransfer.fungible_info.symbol
+          }`,
           color: "orange",
         };
       case "send":
+        const sendTransfer = tx.attributes.transfers[0];
         return {
-          emoji: "📤",
+          emoji: "💸",
           category: "Sent",
-          description: "Sent tokens",
+          description: `${sendTransfer.quantity.float.toFixed(2)} ${
+            sendTransfer.fungible_info.symbol
+          }`,
           color: "teal",
         };
       case "stake":
+        const stakeTransfer = tx.attributes.transfers[0];
         return {
           emoji: "🔒",
           category: "Stake",
-          description: "Staked tokens",
+          description: `${stakeTransfer.quantity.float.toFixed(2)} ${
+            stakeTransfer.fungible_info.symbol
+          }`,
           color: "cyan",
         };
       default:
@@ -80,6 +116,13 @@ export const TransactionRow = ({
   const { color, emoji, category, description } = getActionDetails(
     tx.attributes.operation_type
   );
+
+  const chainId =
+    tx.relationships.chain.data.id.toLowerCase()
+    console.log({ chainId})
+
+  const blockExplorerUrl = getTransactionURL(chainId, tx.attributes.hash);
+
   return (
     <Group key={index} position="apart">
       <Group spacing="md">
@@ -95,9 +138,16 @@ export const TransactionRow = ({
           </Text>
         </Box>
       </Group>
-
       <Box ta="right">
-        <HiArrowUpRight size={"2rem"} color="#C5C4C5" />
+        <Link href={blockExplorerUrl} target="_blank" rel="noopener noreferrer">
+          <HiArrowUpRight
+            size={"2rem"}
+            color="#C5C4C5"
+            style={{
+              transform: "translate(-0.5rem, 0.75rem)",
+            }}
+          />
+        </Link>
       </Box>
     </Group>
   );

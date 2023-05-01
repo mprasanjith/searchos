@@ -1,28 +1,24 @@
 import {
-  Avatar,
-  Box,
   Detail,
   Group,
   Stack,
   Text,
   useEnsName,
-  ethers,
   useEnsAddress,
   useAccount,
   useNetwork,
-  Alert,
-  IconAlertCircle,
   Card,
   Flex,
   Grid,
   Badge,
+  Box
 } from "@/sdk";
 import useSWR from "swr";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ZerionClient } from "./client";
 import { IconCopy } from "@/sdk";
 import { TransactionRow } from "./TransactionRow";
-import { WalletTransactionsData } from "./types";
+import { getWalletColor, getWalletEmoji } from "./utils";
 interface UserProfileProps {
   client: ZerionClient;
   addressOrEns?: `0x${string}` | string | null;
@@ -32,6 +28,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
   client,
   addressOrEns,
 }) => {
+    const [active, setActive] = useState(false)
   const { chain } = useNetwork();
   const { address: userAddress } = useAccount();
   const addressToUse = addressOrEns || userAddress;
@@ -89,6 +86,16 @@ export const UserProfile: React.FC<UserProfileProps> = ({
     return `${resolvedAddress.slice(0, 6)}...${resolvedAddress.slice(-4)}`;
   }, [resolvedAddress]);
 
+  if(!walletTransactions || walletTransactions.length === 0) {
+    return null
+  }
+  const copyToClipBoard = () => {
+    navigator.clipboard.writeText(resolvedAddress ?? "")
+    setActive(true)
+    setTimeout(() => {
+        setActive(false)
+    }, 2000);
+  }
   return (
     <Detail isPending={isLoading} isError={error}>
       <Stack spacing="lg" m="md">
@@ -96,10 +103,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({
           shadow="sm"
           padding="lg"
           radius="md"
-          w={"auto"}
+          w={"354px"}
           h={"207px"}
           style={{
-            backgroundColor: "#911919",
+            backgroundColor: getWalletColor(resolvedAddress),
           }}
         >
           <Card.Section>
@@ -113,7 +120,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                 }}
                 span={6}
               >
-                🐙
+                {getWalletEmoji(resolvedAddress)}
               </Grid.Col>
               <Grid.Col
                 span={6}
@@ -124,10 +131,18 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                 }}
               >
                 <Group>
-                  <Text size={"lg"} color="white" weight={700}>
-                    {shortenedAddress}
+                    <Flex onClick={copyToClipBoard} style={{
+                        cursor: "pointer",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                    }}>
+                  <Text size={"lg"} color="white" weight={700} style={{
+                    marginRight: "0.5rem"
+                  }}>
+                    {active ? "Copied" : shortenedAddress}
                   </Text>
-                  <IconCopy color="white" size={"1rem"} fontWeight={700} />
+                  {active ? "✅" : <IconCopy color="white" size={"1rem"} fontWeight={700}/>}
+                  </Flex>
                 </Group>
               </Grid.Col>
               <Grid.Col
@@ -184,7 +199,8 @@ export const UserProfile: React.FC<UserProfileProps> = ({
         <Text size="lg" weight="bold">
           Key Events
         </Text>
-        {walletTransactions?.map((tx, key) => (
+        
+        {walletTransactions.map((tx, key) => (
           <TransactionRow index={key} tx={tx} key={key} />
         ))
         }

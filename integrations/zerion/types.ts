@@ -127,15 +127,16 @@ export type WalletTransactionsData = {
       quantity: Quantity;
       sender: string;
     }>;
-    relationships: {
-      chain: {
-        links: {
-          related: string;
-        };
-        data: {
-          type: string;
-          id: string;
-        };
+   
+  };
+  relationships: {
+    chain: {
+      links: {
+        related: string;
+      };
+      data: {
+        type: string;
+        id: string;
       };
     };
   };
