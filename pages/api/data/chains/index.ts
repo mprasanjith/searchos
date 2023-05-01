@@ -1,22 +1,6 @@
+import { ChainData } from "@/utils/types/data";
 import { NextApiHandler } from "next";
 import pMap from "p-map";
-
-interface Chain {
-  name: string;
-  chain: string;
-  chainId: number;
-  icon: string;
-  rpc: string[];
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  explorer: {
-    name: string;
-    url: string;
-  }[];
-}
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method !== "GET") {
@@ -71,7 +55,7 @@ const handler: NextApiHandler = async (req, res) => {
     { stopOnError: false }
   );
 
-  const data: Chain[] = chainsWithNativeToken?.map((chain: any) => ({
+  const data: ChainData[] = chainsWithNativeToken?.map((chain: any) => ({
     name: chain?.attributes?.name,
     chain: chain?.id,
     chainId: Number.parseInt(chain?.attributes?.external_id, 16),

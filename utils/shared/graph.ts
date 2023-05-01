@@ -1,5 +1,5 @@
 import { DirectedGraph, UndirectedGraph } from "graphology";
-import { Task } from "../types";
+import { Task } from "../types/task";
 import { hasCycle, topologicalSort } from "graphology-dag";
 import { apps } from "../../extensions/apps";
 import pWaterfall from "p-waterfall";
@@ -79,11 +79,11 @@ async function executeNode(attributes: Record<string, any>) {
   const resolver = resolvers.find((resolver) => resolver.name === taskName);
 
   if (resolver) {
-    const argsArray = Object.keys(resolver.params).map(
-      (param) => attributes?.args?.[param]
-    );
-    console.log("argsArray", argsArray);
-    const result = await resolver.handler(argsArray);
+    const argsArray = Object.keys(resolver.params)
+      .map((param) => param.replace("?", ""))
+      .map((param) => attributes?.args?.[param]);
+    console.log({ attributes, argsArray });
+    const result = await resolver.handler(...argsArray);
 
     return result;
   }

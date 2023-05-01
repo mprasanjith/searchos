@@ -1,7 +1,7 @@
 import { apps } from "@/extensions/apps";
 import resolvers from "@/extensions/resolvers";
 import { Configuration, OpenAIApi } from "openai";
-import { Task } from "../types";
+import { Task } from "../types/task";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,

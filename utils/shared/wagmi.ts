@@ -6,7 +6,9 @@ const { provider, webSocketProvider } = configureChains(
   [publicProvider()]
 );
 
-export const client = createClient({
-  provider,
-  webSocketProvider,
-});
+export const setupClient = () => {
+  createClient({
+    provider,
+    webSocketProvider,
+  });
+};

@@ -1,4 +1,4 @@
-import { App, Param, Wallet } from "@/utils/types";
+import { App, Param, Wallet } from "@/utils/types/task";
 import useSWR from "swr";
 
 interface UserProfileProps {
