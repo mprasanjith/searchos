@@ -109,7 +109,7 @@ type BlockExplorers = {
 export function getTransactionURL(
   chainName: string,
   transactionId: string
-): string {
+): string | null {
   const blockExplorers: BlockExplorers = {
     ethereum: "https://etherscan.io/tx",
     arbitrum: "https://arbiscan.io/tx",
@@ -121,12 +121,13 @@ export function getTransactionURL(
     polygon: "https://polygonscan.com/tx",
     solana: "https://explorer.solana.com/tx",
     gnosis: "https://gnosisscan.io/tx",
+    xdai: "https://gnosisscan.io/tx"
   };
 
   const explorerURL = blockExplorers[chainName];
 
   if (!explorerURL) {
-    throw new Error(`Unknown chain: ${chainName}`);
+    return null
   }
 
   return `${explorerURL}/${transactionId}`;

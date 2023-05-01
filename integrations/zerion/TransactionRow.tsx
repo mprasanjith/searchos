@@ -20,7 +20,6 @@ export const TransactionRow = ({
   if (!shouldRender) {
     return null;
   }
-
   const getActionDetails = (transactionType: string) => {
     switch (transactionType) {
       case "receive":
@@ -29,7 +28,7 @@ export const TransactionRow = ({
           emoji: "📥",
           category: "Received",
           description: `${receiveTransfer.quantity.float.toFixed(2)} ${
-            receiveTransfer.fungible_info.symbol
+            receiveTransfer.fungible_info?.symbol
           }`,
           color: "green",
         };
@@ -39,7 +38,7 @@ export const TransactionRow = ({
           emoji: "🔄",
           category: "Trade",
           description: `${tradeTransfer.quantity.float.toFixed(2)} ${
-            tradeTransfer.fungible_info.symbol
+            tradeTransfer.fungible_info?.symbol
           }`,
           color: "indigo",
         };
@@ -49,7 +48,7 @@ export const TransactionRow = ({
           emoji: "✅",
           category: "Approve",
           description: `${approveTransfer.quantity.float.toFixed(2)} ${
-            approveTransfer.fungible_info.symbol
+            approveTransfer.fungible_info?.symbol
           }`,
           color: "blue",
         };
@@ -59,7 +58,7 @@ export const TransactionRow = ({
           emoji: "🔥",
           category: "Burn",
           description: `${burnTransfer.quantity.float.toFixed(2)} ${
-            burnTransfer.fungible_info.symbol
+            burnTransfer.fungible_info?.symbol
           }`,
           color: "red",
         };
@@ -69,7 +68,7 @@ export const TransactionRow = ({
           emoji: "💰",
           category: "Mint",
           description: `${mintTransfer.quantity.float.toFixed(2)} ${
-            mintTransfer.fungible_info.symbol
+            mintTransfer.nft_info?.name
           }`,
           color: "lime",
         };
@@ -79,7 +78,7 @@ export const TransactionRow = ({
           emoji: "💼",
           category: "Withdraw",
           description: `${withdrawTransfer.quantity.float.toFixed(2)} ${
-            withdrawTransfer.fungible_info.symbol
+            withdrawTransfer.fungible_info?.symbol
           }`,
           color: "orange",
         };
@@ -89,7 +88,7 @@ export const TransactionRow = ({
           emoji: "💸",
           category: "Sent",
           description: `${sendTransfer.quantity.float.toFixed(2)} ${
-            sendTransfer.fungible_info.symbol
+            sendTransfer.fungible_info?.symbol
           }`,
           color: "teal",
         };
@@ -99,7 +98,7 @@ export const TransactionRow = ({
           emoji: "🔒",
           category: "Stake",
           description: `${stakeTransfer.quantity.float.toFixed(2)} ${
-            stakeTransfer.fungible_info.symbol
+            stakeTransfer.fungible_info?.symbol
           }`,
           color: "cyan",
         };
@@ -119,8 +118,6 @@ export const TransactionRow = ({
 
   const chainId =
     tx.relationships.chain.data.id.toLowerCase()
-    console.log({ chainId})
-
   const blockExplorerUrl = getTransactionURL(chainId, tx.attributes.hash);
 
   return (
@@ -139,7 +136,7 @@ export const TransactionRow = ({
         </Box>
       </Group>
       <Box ta="right">
-        <Link href={blockExplorerUrl} target="_blank" rel="noopener noreferrer">
+        <Link href={blockExplorerUrl ?? ""} target="_blank" rel="noopener noreferrer">
           <HiArrowUpRight
             size={"2rem"}
             color="#C5C4C5"
