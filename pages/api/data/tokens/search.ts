@@ -8,12 +8,12 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const query = req.query.q as string;
-  const chain = req.query.chain as string;
-
-  if (!query || !chain) {
+  if (!req.query.q || !req.query.chain) {
     throw new Error("Invalid query");
   }
+
+  const query = String(req.query.q).trim();
+  const chain = String(req.query.chain).trim();
 
   const url = `https://api.zerion.io/v1/fungibles/?currency=usd&page[size]=100&filter[search_query]=${query}&filter[implementation_chain_id]=${chain}&sort=-market_data.market_cap`;
 
@@ -35,10 +35,14 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   const match =
-    result.data.find(
-      (token: any) =>
-        token.attributes?.symbol?.toLowerCase() === query?.toLowerCase()
-    ) || result.data[0];
+    result.data
+      .filter((token: any) => {
+        return token?.attributes?.flags?.verified;
+      })
+      .find(
+        (token: any) =>
+          token.attributes?.symbol?.toLowerCase() === query?.toLowerCase()
+      ) || result.data[0];
   const implementation = match?.attributes?.implementations.find(
     (impl: any) => impl.chain_id === chain
   );

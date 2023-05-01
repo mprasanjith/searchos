@@ -11,7 +11,7 @@ const openai = new OpenAIApi(configuration);
 export const buildSystemMessage = () => {
   const intro = [
     "The AI assistant can parse user input to several tasks and Put it in the following JSON structure:",
-    `[{"task": taskName, "id": task_id_num, "args": {<KEY>: text or <GENERATED>-dep_task_id_num}}]`,
+    `[{"task": taskName, "id": task_id_num, "args": {<KEY>: text or "<GENERATED>-dep_task_id_num"}}]`,
     `The special string tag "<GENERATED>-dep_task_id_num" refer to the one generated response in the dependency task (Please consider whether the dependency task generates resources of this type.). For example, <GENERATED>-1, <GENERATED>-2 ...`,
     `"args" is a key-value object of parsed arguments to the task.`,
     `Do not format the JSON. Do not have any other messages other than the JSON. If you do not know any optional field, leave it null.`,
@@ -50,12 +50,12 @@ export const buildSystemMessage = () => {
 export const getCompletion = async (
   systemMessage: string,
   userRequest: string,
-  chainId: number,
+  chain: string,
   walletAddress: string
 ) => {
   const userMessage = [
     userRequest,
-    `Current chain ID: ${chainId}`,
+    `Current chain name (Need to resolve): ${chain}`,
     `User wallet address: ${walletAddress}`,
   ].join("\n");
 

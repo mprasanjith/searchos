@@ -26,13 +26,13 @@ export enum Param {
   WALLET_NAME = "WalletNameString",
   TOKEN_NAME = "TokenNameString",
   CHAIN_NAME = "ChainNameString",
-  TOKEN_AMOUNT = "TokenAmountString",
+  TOKEN_AMOUNT = "TokenAmountNumber",
 
   // Parsed
   WALLET = "WalletAddress",
   TOKEN = "TokenReference",
   CHAIN = "ChainReference",
-  TOKEN_AMOUNT_BN = "TokenAmount",
+  TOKEN_AMOUNT_BN = "TokenAmountParsed",
 }
 
 export interface Resolver {

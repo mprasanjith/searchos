@@ -3,36 +3,33 @@ import { buildGraph, executeGraph } from "@/utils/shared/graph";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {
-  const chainId = req.query.chain as string;
-  const walletAddress = req.query.wallet as string;
-
-  if (!chainId || !walletAddress) {
-    throw new Error("Missing chainId or walletAddress");
+  if (!req.query.chain || !req.query.wallet || !req.query.q) {
+    throw new Error("Invalid query");
   }
 
-  const query = req.query.q as string;
-  if (!query) {
-    throw new Error("Missing query");
-  }
+  const chain = String(req.query.chain).trim();
+  const walletAddress = String(req.query.wallet).trim();
+  const query = String(req.query.q).trim();
 
   const systemMessage = buildSystemMessage();
   const completion = await getCompletion(
     systemMessage,
     query,
-    parseInt(chainId),
+    chain,
     walletAddress
   );
   if (!completion) {
     throw new Error("Error resolving query");
   }
 
-  const graph = buildGraph(completion);
-
-  graph.forEachNode((node: any, attr: Record<string, any>) => {
-    console.log(node, attr);
-  });
+  const graph = await buildGraph(completion);
 
   const executedGraph: any = await executeGraph(graph);
+
+  // executedGraph.forEachNode((nodeId, args) => {
+  //   console.log({ nodeId, args });
+  // });
+
   const uiNodeId = executedGraph.findNode(
     (_: any, attributes: Record<string, any>) => !!attributes.isInterface
   );

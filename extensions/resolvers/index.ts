@@ -55,7 +55,7 @@ const resolvers: Resolver[] = [
     },
   },
   {
-    name: "ResolveTokenAddress",
+    name: "ResolveToken",
     params: {
       tokenName: Param.TOKEN_NAME,
       "chain?": Param.CHAIN,
@@ -86,7 +86,6 @@ const resolvers: Resolver[] = [
           tokenAmount,
           token.decimals
         );
-        console.log(tokenAmount, token, parsedAmount);
 
         return parsedAmount;
       } catch (error) {
